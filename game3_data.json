@@ -1,0 +1,476 @@
+{
+  "storyId": "cuatro_amigos",
+  "title": "Cuatro Amigos",
+  "version": "V1",
+  "characters": [
+    {
+      "name": "Paula",
+      "img": "paula.png",
+      "gender": "f",
+      "trait_words": [
+        "chica",
+        "alta"
+      ]
+    },
+    {
+      "name": "Lez",
+      "img": "lez.png",
+      "gender": "m",
+      "trait_words": [
+        "chico",
+        "rico"
+      ]
+    },
+    {
+      "name": "Clifford",
+      "img": "clifford.png",
+      "gender": "m",
+      "trait_words": [
+        "perro",
+        "grande"
+      ]
+    },
+    {
+      "name": "Harry",
+      "img": "harry.png",
+      "gender": "m",
+      "trait_words": [
+        "elefante",
+        "pequeño"
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "word": "alta",
+      "key": "alta",
+      "audio": "narr_voc_alta.mp3"
+    },
+    {
+      "word": "chica",
+      "key": "chica",
+      "audio": "narr_voc_chica.mp3"
+    },
+    {
+      "word": "chico",
+      "key": "chico",
+      "audio": "narr_voc_chico.mp3"
+    },
+    {
+      "word": "elefante",
+      "key": "elefante",
+      "audio": "narr_voc_elefante.mp3"
+    },
+    {
+      "word": "eres",
+      "key": "eres",
+      "audio": "narr_voc_eres.mp3"
+    },
+    {
+      "word": "es",
+      "key": "es",
+      "audio": "narr_voc_es.mp3"
+    },
+    {
+      "word": "grande",
+      "key": "grande",
+      "audio": "narr_voc_grande.mp3"
+    },
+    {
+      "word": "pequeño",
+      "key": "pequeño",
+      "audio": "narr_voc_pequeno.mp3"
+    },
+    {
+      "word": "perro",
+      "key": "perro",
+      "audio": "narr_voc_perro.mp3"
+    },
+    {
+      "word": "rico",
+      "key": "rico",
+      "audio": "narr_voc_rico.mp3"
+    },
+    {
+      "word": "soy",
+      "key": "soy",
+      "audio": "narr_voc_soy.mp3"
+    },
+    {
+      "word": "un",
+      "key": "un",
+      "audio": "narr_voc_un.mp3"
+    },
+    {
+      "word": "una",
+      "key": "una",
+      "audio": "narr_voc_una.mp3"
+    },
+    {
+      "word": "Clifford",
+      "key": "clifford",
+      "audio": "narr_voc_clifford.mp3"
+    },
+    {
+      "word": "Harry",
+      "key": "harry",
+      "audio": "narr_voc_harry.mp3"
+    },
+    {
+      "word": "Lez",
+      "key": "lez",
+      "audio": "narr_voc_lez.mp3"
+    },
+    {
+      "word": "Paula",
+      "key": "paula",
+      "audio": "narr_voc_paula.mp3"
+    },
+    {
+      "word": "Sí",
+      "key": "si",
+      "audio": "narr_voc_si.mp3"
+    },
+    {
+      "word": "No",
+      "key": "no",
+      "audio": "narr_voc_no.mp3"
+    },
+    {
+      "word": "y",
+      "key": "y",
+      "audio": "narr_voc_y.mp3"
+    },
+    {
+      "word": "o",
+      "key": "o",
+      "audio": "narr_voc_o.mp3"
+    },
+    {
+      "word": "Quién",
+      "key": "quién",
+      "audio": "narr_voc_quien.mp3"
+    },
+    {
+      "word": "Cómo es",
+      "key": "como_es",
+      "audio": "narr_voc_como_es.mp3"
+    }
+  ],
+  "answerBank": {
+    "Paula": [
+      {
+        "category": "Yo",
+        "about": "Paula",
+        "sentence": "Soy Paula",
+        "audio": "f_soy_paula.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Paula",
+        "sentence": "Soy una chica",
+        "audio": "f_soy_una_chica.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Paula",
+        "sentence": "Soy alta",
+        "audio": "f_soy_alta.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Lez",
+        "sentence": "Lez es un chico",
+        "audio": "f_lez_es_un_chico.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Lez",
+        "sentence": "Lez es rico",
+        "audio": "f_lez_es_rico.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Clifford",
+        "sentence": "Clifford es un perro",
+        "audio": "f_clifford_es_un_perro.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Clifford",
+        "sentence": "Clifford es grande",
+        "audio": "f_clifford_es_grande.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres pequeño",
+        "audio": "f_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres un elefante",
+        "audio": "f_eres_un_elefante.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "f_eres_harry.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Harry, eres un elefante",
+        "audio": "f_harry_eres_un_elefante.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Harry, eres pequeño",
+        "audio": "f_harry_eres_pequeno.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Harry",
+        "sentence": "Harry es un elefante",
+        "audio": "f_harry_es_un_elefante.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Harry",
+        "sentence": "Harry es pequeño",
+        "audio": "f_harry_es_pequeno.mp3"
+      }
+    ],
+    "Harry": [
+      {
+        "category": "Yo",
+        "about": "Harry",
+        "sentence": "Soy Harry",
+        "audio": "m_soy_harry.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Harry",
+        "sentence": "Soy un elefante",
+        "audio": "m_soy_un_elefante.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Harry",
+        "sentence": "Soy pequeño",
+        "audio": "m_soy_pequeno.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Paula",
+        "sentence": "Paula es una chica",
+        "audio": "m_paula_es_una_chica.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Paula",
+        "sentence": "Paula es alta",
+        "audio": "m_paula_es_alta.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Lez",
+        "sentence": "Lez es un chico",
+        "audio": "m_lez_es_un_chico.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Lez",
+        "sentence": "Lez es rico",
+        "audio": "m_lez_es_rico.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Clifford",
+        "sentence": "Clifford es un perro",
+        "audio": "m_clifford_es_un_perro.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Clifford",
+        "sentence": "Clifford es grande",
+        "audio": "m_clifford_es_grande.mp3"
+      }
+    ],
+    "Lez": [
+      {
+        "category": "Yo",
+        "about": "Lez",
+        "sentence": "Soy Lez",
+        "audio": "m_soy_lez.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Lez",
+        "sentence": "Soy un chico",
+        "audio": "m_soy_un_chico.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Lez",
+        "sentence": "Soy rico",
+        "audio": "m_soy_rico.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Paula",
+        "sentence": "Paula es una chica",
+        "audio": "m_paula_es_una_chica.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Paula",
+        "sentence": "Paula es alta",
+        "audio": "m_paula_es_alta.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Clifford",
+        "sentence": "Clifford es un perro",
+        "audio": "m_clifford_es_un_perro.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Clifford",
+        "sentence": "Clifford es grande",
+        "audio": "m_clifford_es_grande.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres pequeño",
+        "audio": "m_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres un elefante",
+        "audio": "m_eres_un_elefante.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "m_eres_harry.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Harry, eres un elefante",
+        "audio": "m_harry_eres_un_elefante.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Harry, eres pequeño",
+        "audio": "m_harry_eres_pequeno.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Harry",
+        "sentence": "Harry es un elefante",
+        "audio": "m_harry_es_un_elefante.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Harry",
+        "sentence": "Harry es pequeño",
+        "audio": "m_harry_es_pequeno.mp3"
+      }
+    ],
+    "Clifford": [
+      {
+        "category": "Yo",
+        "about": "Clifford",
+        "sentence": "Soy Clifford",
+        "audio": "m_soy_clifford.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Clifford",
+        "sentence": "Soy un perro",
+        "audio": "m_soy_un_perro.mp3"
+      },
+      {
+        "category": "Yo",
+        "about": "Clifford",
+        "sentence": "Soy grande",
+        "audio": "m_soy_grande.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Paula",
+        "sentence": "Paula es una chica",
+        "audio": "m_paula_es_una_chica.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Paula",
+        "sentence": "Paula es alta",
+        "audio": "m_paula_es_alta.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Lez",
+        "sentence": "Lez es un chico",
+        "audio": "m_lez_es_un_chico.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Lez",
+        "sentence": "Lez es rico",
+        "audio": "m_lez_es_rico.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres pequeño",
+        "audio": "m_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres un elefante",
+        "audio": "m_eres_un_elefante.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "m_eres_harry.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Harry, eres un elefante",
+        "audio": "m_harry_eres_un_elefante.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Harry, eres pequeño",
+        "audio": "m_harry_eres_pequeno.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Harry",
+        "sentence": "Harry es un elefante",
+        "audio": "m_harry_es_un_elefante.mp3"
+      },
+      {
+        "category": "Él/Ella",
+        "about": "Harry",
+        "sentence": "Harry es pequeño",
+        "audio": "m_harry_es_pequeno.mp3"
+      }
+    ]
+  }
+}
