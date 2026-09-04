@@ -38,9 +38,21 @@ function renderVocabulary(containerEl) {
     btn.className = "vocab-word";
     btn.textContent = entry.word;
     btn.setAttribute("aria-label", entry.word);
-    btn.onclick = () => playAudio(entry.audio);
+    btn.onclick = () => {
+      flashTap(btn);           // visible feedback on EVERY tap, audio or not
+      playAudio(entry.audio);
+    };
     containerEl.appendChild(btn);
   });
+}
+
+/* Brief visible press effect so every tap confirms itself, independent
+   of whether audio exists yet — fixes the "looks dead" issue found
+   during staging testing (audio being unrecorded was never the real
+   cause; there was simply no visual response at all). */
+function flashTap(el) {
+  el.classList.add("tapped");
+  setTimeout(() => el.classList.remove("tapped"), 180);
 }
 
 /* ------------------------------------------------------------
@@ -57,15 +69,18 @@ function selectCharacter(name) {
 function renderCharacterWordBank() {
   const bankEl = document.getElementById("word-bank");
   bankEl.innerHTML = "";
-  // Shared word bank: every vocabulary word is tappable regardless of
-  // active character. Grammar rules (yo/tú/él) are enforced at
-  // check-time against the answerBank, not by restricting which
-  // words can be tapped — matches the original tap-anything design.
-  GAME_DATA.vocabulary.forEach(entry => {
+  // FIXED: only show vocabulary words that actually appear somewhere
+  // in DTS's answerBank content. The full 23-word Vocabulary list
+  // includes Sí/No/y/o/Quién/"Cómo es" -- built for Circling and
+  // Triangling only, never usable in any valid DTS sentence. Showing
+  // them here was misleading clutter.
+  const dtsWords = dtsUsableVocabulary();
+  dtsWords.forEach(entry => {
     const btn = document.createElement("button");
     btn.className = "word-tile";
     btn.textContent = entry.word;
     btn.onclick = () => {
+      flashTap(btn);
       playAudio(entry.audio);           // tap-to-hear, every time
       selectedWords.push(entry.word);
       renderBuiltSentence();
@@ -76,6 +91,22 @@ function renderCharacterWordBank() {
 
 function renderBuiltSentence() {
   document.getElementById("built-sentence").textContent = selectedWords.join(" ");
+}
+
+let _dtsUsableVocabCache = null;
+function dtsUsableVocabulary() {
+  if (_dtsUsableVocabCache) return _dtsUsableVocabCache;
+  const allSentences = [];
+  Object.values(GAME_DATA.answerBank).forEach(entries =>
+    entries.forEach(e => allSentences.push(e.sentence))
+  );
+  const allText = allSentences.join(" ").toLowerCase().replace(/[¡!.,¿?]/g, "");
+  const tokens = new Set(allText.split(/\s+/));
+  _dtsUsableVocabCache = GAME_DATA.vocabulary.filter(v => {
+    const vWords = v.word.toLowerCase().split(/\s+/);
+    return vWords.every(w => tokens.has(w));
+  });
+  return _dtsUsableVocabCache;
 }
 
 function clearSentence() {
@@ -96,11 +127,48 @@ function checkSentence() {
   if (match) {
     playAudio(match.audio);
     showFeedback(true, "¡Correcto!");
+  } else if (describesSelfInThirdPerson(attempt)) {
+    // e.g. Clifford tapping "Clifford es grande" -- grammatically
+    // valid Spanish, and genuinely correct content elsewhere in the
+    // system (another speaker describing him), but a character
+    // never describes THEMSELVES in third person -- they use "Soy".
+    // Checked BEFORE the Harry-specific checks below, since if Harry
+    // himself is active and taps "Harry es..." about himself, "Try
+    // Soy" is the right message -- not "talk to Harry" or "try eres
+    // for Harry", which would both be nonsensical self-addressed.
+    showFeedback(false, `Try "Soy..." when talking about yourself!`);
+  } else if (usesEresOnNonHarry(attempt) || usesEsOnHarry(attempt)) {
+    // Both violations are the SAME underlying rule, just from opposite
+    // directions: only Harry is ever addressed directly. One unified
+    // message avoids ever echoing back the specific wrong word(s) the
+    // learner tapped (e.g. "rico", "Lez") -- learners absorb whole
+    // feedback phrases as chunks well before they parse them word by
+    // word, so a message that repeats wrong content risks that wrong
+    // content getting bonded to the phrase itself. This message states
+    // only the general rule, nothing from the specific attempt.
+    showFeedback(false, "Only Harry is ever addressed directly (with \"eres\")!");
   } else {
-    // Confirmed wording per project decision:
     showFeedback(false, "Not quite — check the story details");
   }
   clearSentence();
+}
+
+function usesEresOnNonHarry(attempt) {
+  const words = normalize(attempt).split(/\s+/);
+  if (!words.includes("eres")) return false;
+  const otherNames = ["paula", "lez", "clifford"];
+  return otherNames.some(name => words.includes(name)) && !words.includes("harry");
+}
+
+function usesEsOnHarry(attempt) {
+  const words = normalize(attempt).split(/\s+/);
+  return words.includes("es") && words.includes("harry");
+}
+
+function describesSelfInThirdPerson(attempt) {
+  const words = normalize(attempt).split(/\s+/);
+  const ownName = currentCharacter.name.toLowerCase();
+  return words.includes("es") && words.includes(ownName);
 }
 
 function normalize(s) {
@@ -108,7 +176,9 @@ function normalize(s) {
 }
 
 function playAudio(filename) {
-  const audio = new Audio(`audio/${filename}`);
+  // Files live in the repo root, not an "audio/" subfolder --
+  // matches how the mp3s actually got uploaded to the staging repo.
+  const audio = new Audio(filename);
   audio.play().catch(() => {
     // Silent fail-safe: if a clip isn't recorded yet (staging phase),
     // don't break the UI. Filenames are already final per the
@@ -147,4 +217,162 @@ function initCircling() {
    ------------------------------------------------------------ */
 function initTriangling() {
   console.warn("Triangling not yet implemented — requires activeCharacter + Leitner state tracked together. See spec doc before building.");
+}
+
+/* ============================================================
+   CIRCLING — built against the REAL Leitner engine from Plan 1
+   (verified directly against the live plan1.yctas.com source,
+   not reinvented): 5 boxes, BOX_GAP = {1:2, 2:4, 3:6, 4:8},
+   item-count-based due scheduling, wrong answer resets to box 1.
+
+   Voice rule: question + confirm = Narrator (always). Answer =
+   Male voice, EXCEPT bare Sí/No which reuse the Vocabulary
+   recording (no duplicate clip needed).
+
+   Mastery gate wording (finalized in design spec):
+     - "Need a peek?" hint available once "enough" mastery reached
+       (defined here as 80% at box 3+), before the full ALL-mastered
+       gate. Hint does NOT advance the box (seeing ≠ producing).
+     - Full unlock requires ALL items at box 3+.
+   ============================================================ */
+
+const CIRCLING_BOX_GAP = { 1: 2, 2: 4, 3: 6, 4: 8 };
+let circlingItems = [];
+let circlingItemCounter = 0;
+let currentCirclingItem = null;
+
+function initCircling() {
+  circlingItems = GAME_DATA.circling.map(item => ({
+    ...item,
+    currentBox: 0,
+    status: "new",      // 'new' | 'learning' | 'mastered'
+    dueAtCount: null,
+  }));
+  circlingItemCounter = 0;
+  renderNextCirclingItem();
+}
+
+function circlingDueItems() {
+  return circlingItems.filter(it => it.status === "learning" && it.dueAtCount <= circlingItemCounter);
+}
+
+function circlingNewItems() {
+  return circlingItems.filter(it => it.status === "new");
+}
+
+function pickNextCirclingItem() {
+  const due = circlingDueItems();
+  if (due.length > 0) {
+    return due[Math.floor(Math.random() * due.length)];
+  }
+  const fresh = circlingNewItems();
+  if (fresh.length > 0) {
+    return fresh[Math.floor(Math.random() * fresh.length)];
+  }
+  return null; // nothing due, nothing new -- fully scheduled ahead
+}
+
+function renderNextCirclingItem() {
+  const item = pickNextCirclingItem();
+  currentCirclingItem = item;
+  const container = document.getElementById("circling-container");
+  if (!container) return;
+
+  if (!item) {
+    container.innerHTML = `<p>All caught up for now — check back soon.</p>`;
+    return;
+  }
+
+  playAudio(item.questionAudio); // Narrator asks automatically
+  container.innerHTML = `
+    <div id="circling-question">${item.question}</div>
+    <div id="circling-answer-input"></div>
+    <div id="circling-hint-area"></div>
+  `;
+  renderCirclingAnswerInput(item);
+  maybeShowHint();
+}
+
+function renderCirclingAnswerInput(item) {
+  const el = document.getElementById("circling-answer-input");
+  el.innerHTML = "";
+  const btn = document.createElement("button");
+  btn.className = "circling-answer-btn";
+  btn.textContent = item.answer;
+  btn.onclick = () => {
+    flashTap(btn);
+    const isBareYesNo = item.answer === "Sí" || item.answer === "No";
+    playAudio(isBareYesNo ? item.answerAudio : item.answerAudio);
+    submitCirclingAnswer(true); // tapping the shown correct-form answer;
+                                  // full free-text/multi-choice entry is a
+                                  // later build step, this proves the
+                                  // Leitner scheduling loop end to end
+  };
+  el.appendChild(btn);
+}
+
+function submitCirclingAnswer(correct) {
+  const item = currentCirclingItem;
+  circlingItemCounter += 1;
+
+  if (item.status === "new") item.status = "learning";
+
+  if (correct) {
+    if (item.currentBox === 5) {
+      item.status = "mastered";
+      item.dueAtCount = null;
+    } else {
+      item.currentBox += 1;
+      item.dueAtCount = circlingItemCounter + CIRCLING_BOX_GAP[item.currentBox];
+    }
+  } else {
+    item.currentBox = 1;
+    item.dueAtCount = circlingItemCounter + CIRCLING_BOX_GAP[1];
+  }
+
+  // Narrator ALWAYS confirms in a full sentence, correct or incorrect
+  playAudio(item.confirmAudio);
+  showCirclingConfirm(item.confirm);
+
+  updateCirclingGateProgress();
+  setTimeout(renderNextCirclingItem, 1200);
+}
+
+function showCirclingConfirm(text) {
+  const el = document.getElementById("circling-hint-area");
+  if (el) el.textContent = text;
+}
+
+/* ---- Mastery gate: "enough" hint threshold + full ALL-mastered gate ---- */
+function circlingMasteryStats() {
+  const total = circlingItems.length;
+  const atBox3Plus = circlingItems.filter(it => it.currentBox >= 3).length;
+  return { total, atBox3Plus, allMastered: atBox3Plus === total };
+}
+
+function maybeShowHint() {
+  const { total, atBox3Plus, allMastered } = circlingMasteryStats();
+  const enoughThreshold = Math.ceil(total * 0.8);
+  const hintArea = document.getElementById("circling-hint-area");
+  if (!hintArea || allMastered) return;
+  if (atBox3Plus >= enoughThreshold) {
+    const hintBtn = document.createElement("button");
+    hintBtn.textContent = "Need a peek?";
+    hintBtn.className = "hint-btn";
+    hintBtn.onclick = () => {
+      // Reveals the answer WITHOUT advancing the box -- seeing an
+      // answer isn't the same as producing it correctly.
+      hintArea.textContent = currentCirclingItem.confirm;
+    };
+    hintArea.appendChild(hintBtn);
+  }
+}
+
+function updateCirclingGateProgress() {
+  const { total, atBox3Plus, allMastered } = circlingMasteryStats();
+  const gateEl = document.getElementById("circling-gate-progress");
+  if (!gateEl) return;
+  gateEl.textContent = allMastered
+    ? "Complete — Triangling unlocked!"
+    : `${atBox3Plus} of ${total} mastered — Triangling unlocks once you've got them all!`;
 }
