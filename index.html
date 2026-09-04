@@ -36,6 +36,10 @@
   </div>
   <div id="feedback"></div>
 
+  <h2>Triangling (tú-block only — preview)</h2>
+  <div class="char-select" id="triangling-char-select"></div>
+  <div id="triangling-container"></div>
+
 <script src="game3.js"></script>
 <script>
   loadGameData().then(() => {
@@ -50,6 +54,18 @@
         selectCharacter(c.name);
       };
       sel.appendChild(btn);
+    });
+
+    const triSel = document.getElementById("triangling-char-select");
+    ["Paula","Lez","Clifford"].forEach(name => {
+      const btn = document.createElement("button");
+      btn.textContent = name;
+      btn.onclick = () => {
+        document.querySelectorAll("#triangling-char-select button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectTrianglingCharacter(name);
+      };
+      triSel.appendChild(btn);
     });
   });
 </script>

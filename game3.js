@@ -81,7 +81,12 @@ function renderCharacterWordBank() {
     btn.textContent = entry.word;
     btn.onclick = () => {
       flashTap(btn);
-      playAudio(entry.audio);           // tap-to-hear, every time
+      // MUTED on purpose: individual word taps inside DTS's sentence
+      // builder used to play the word's own Narrator audio -- with
+      // several taps per sentence, this drowned out the one moment
+      // that actually matters: the character's own voice confirming
+      // a correct full sentence on Check. Text still builds visibly;
+      // only Check triggers audio now.
       selectedWords.push(entry.word);
       renderBuiltSentence();
     };
@@ -375,4 +380,97 @@ function updateCirclingGateProgress() {
   gateEl.textContent = allMastered
     ? "Complete — Triangling unlocked!"
     : `${atBox3Plus} of ${total} mastered — Triangling unlocks once you've got them all!`;
+}
+
+/* ============================================================
+   TRIANGLING — tú-block (direct address). Character-blocked per
+   Triangling_Question_Selection_Spec_V1.md: questions stay scoped
+   to ONE character at a time, never mixed, since "¿Eres alta?" is
+   not self-disambiguating by text alone.
+
+   Answer flow, per Curious C's design:
+     1. Narrator's question auto-plays (real audio, already exists)
+     2. Character's own word bank appears -- tapping a word is
+        SILENT for now (no per-word audio recorded yet in each
+        character's own voice; tiles are visual-only placeholders,
+        NOT reusing the shared Vocabulary/Narrator audio, per the
+        "mute vocab buttons outside Vocabulary" rule)
+     3. Once the full answer is built, the character's own COMPLETE
+        phrase plays (real audio, already recorded)
+     4. Narrator confirms (real audio, already recorded)
+     5. Auto-advances to the next question in the SAME character's
+        block
+
+   NOT YET BUILT: the Narrator-self ("yo") block and the él/ella
+   third-person cross-reference block. This engine currently covers
+   only the tú (direct-address) block, which is what was demoed.
+   ============================================================ */
+
+let trianglingActiveCharacter = null;
+let trianglingQueue = [];
+let trianglingIndex = 0;
+let trianglingSelectedWords = [];
+
+function selectTrianglingCharacter(name) {
+  trianglingActiveCharacter = name;
+  trianglingQueue = GAME_DATA.triangling.filter(e => e.character === name);
+  trianglingIndex = 0;
+  trianglingSelectedWords = [];
+  renderTrianglingQuestion();
+}
+
+function renderTrianglingQuestion() {
+  const container = document.getElementById("triangling-container");
+  if (!container) return;
+
+  if (trianglingIndex >= trianglingQueue.length) {
+    container.innerHTML = `<p>${trianglingActiveCharacter}'s questions complete! Select a character to continue.</p>`;
+    return;
+  }
+
+  const item = trianglingQueue[trianglingIndex];
+  trianglingSelectedWords = [];
+  playAudio(item.questionAudio); // Narrator auto-asks
+
+  container.innerHTML = `
+    <div id="triangling-active-char">Talking to: ${trianglingActiveCharacter}</div>
+    <div id="triangling-question">${item.question}</div>
+    <div id="triangling-word-bank"></div>
+    <div id="triangling-built"></div>
+    <div id="triangling-feedback"></div>
+  `;
+  renderTrianglingWordBank(item);
+}
+
+function renderTrianglingWordBank(item) {
+  const bankEl = document.getElementById("triangling-word-bank");
+  bankEl.innerHTML = "";
+  item.answerWords.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "word-tile";
+    btn.textContent = word;
+    btn.onclick = () => {
+      flashTap(btn);
+      // SILENT on purpose -- no per-word audio in the character's own
+      // voice exists yet. Visual-only until those recordings are made.
+      trianglingSelectedWords.push(word);
+      document.getElementById("triangling-built").textContent = trianglingSelectedWords.join(" ");
+      if (trianglingSelectedWords.length === item.answerWords.length) {
+        submitTrianglingAnswer(item);
+      }
+    };
+    bankEl.appendChild(btn);
+  });
+}
+
+function submitTrianglingAnswer(item) {
+  // Full natural phrase, in the character's OWN voice -- real audio.
+  playAudio(item.answerAudio);
+  setTimeout(() => {
+    // Narrator confirms -- real audio.
+    playAudio(item.confirmAudio);
+    document.getElementById("triangling-feedback").textContent = item.confirm;
+    trianglingIndex += 1;
+    setTimeout(renderTrianglingQuestion, 1500);
+  }, 1200);
 }
