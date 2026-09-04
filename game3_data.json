@@ -1223,5 +1223,106 @@
       "confirm": "Sí, eres un perro.",
       "confirmAudio": "narr_si_eres_un_perro.mp3"
     }
+  ],
+  "trianglingElElla": [
+    {
+      "id": "tri_elella_31",
+      "subject": "Paula",
+      "type": "quien-es-noun",
+      "question": "¿Quién es una chica?",
+      "questionAudio": "narr_pregunta_quien_es_una_chica.mp3",
+      "answer": "Paula es una chica.",
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "Sí, Paula es una chica.",
+      "confirmAudio": "narr_si_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_32",
+      "subject": "Paula",
+      "type": "quien-es-name",
+      "question": "¿Quién es Paula?",
+      "questionAudio": "narr_pregunta_quien_es_paula.mp3",
+      "answer": "Paula es una chica.",
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "Sí, Paula es una chica.",
+      "confirmAudio": "narr_si_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_33",
+      "subject": "Paula",
+      "type": "quien-es-trait",
+      "question": "¿Quién es alta?",
+      "questionAudio": "narr_pregunta_quien_es_alta.mp3",
+      "answer": "Paula es alta.",
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "Sí, Paula es alta.",
+      "confirmAudio": "narr_si_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_34",
+      "subject": "Lez",
+      "type": "quien-es-noun",
+      "question": "¿Quién es un chico?",
+      "questionAudio": "narr_pregunta_quien_es_un_chico.mp3",
+      "answer": "Lez es un chico.",
+      "answerAudio": "m_lez_es_un_chico.mp3",
+      "confirm": "Sí, Lez es un chico.",
+      "confirmAudio": "narr_si_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_35",
+      "subject": "Lez",
+      "type": "quien-es-name",
+      "question": "¿Quién es Lez?",
+      "questionAudio": "narr_pregunta_quien_es_lez.mp3",
+      "answer": "Lez es un chico.",
+      "answerAudio": "m_lez_es_un_chico.mp3",
+      "confirm": "Sí, Lez es un chico.",
+      "confirmAudio": "narr_si_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_36",
+      "subject": "Lez",
+      "type": "quien-es-trait",
+      "question": "¿Quién es rico?",
+      "questionAudio": "narr_pregunta_quien_es_rico.mp3",
+      "answer": "Lez es rico.",
+      "answerAudio": "m_lez_es_rico.mp3",
+      "confirm": "Sí, Lez es rico.",
+      "confirmAudio": "narr_si_lez_es_rico.mp3"
+    },
+    {
+      "id": "tri_elella_37",
+      "subject": "Clifford",
+      "type": "quien-es-noun",
+      "question": "¿Quién es un perro?",
+      "questionAudio": "narr_pregunta_quien_es_un_perro.mp3",
+      "answer": "Clifford es un perro.",
+      "answerAudio": "m_clifford_es_un_perro.mp3",
+      "confirm": "Sí, Clifford es un perro.",
+      "confirmAudio": "narr_si_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_38",
+      "subject": "Clifford",
+      "type": "quien-es-name",
+      "question": "¿Quién es Clifford?",
+      "questionAudio": "narr_pregunta_quien_es_clifford.mp3",
+      "answer": "Clifford es un perro.",
+      "answerAudio": "m_clifford_es_un_perro.mp3",
+      "confirm": "Sí, Clifford es un perro.",
+      "confirmAudio": "narr_si_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_39",
+      "subject": "Clifford",
+      "type": "quien-es-trait",
+      "question": "¿Quién es grande?",
+      "questionAudio": "narr_pregunta_quien_es_grande.mp3",
+      "answer": "Clifford es grande.",
+      "answerAudio": "m_clifford_es_grande.mp3",
+      "confirm": "Sí, Clifford es grande.",
+      "confirmAudio": "narr_si_clifford_es_grande.mp3"
+    }
   ]
 }

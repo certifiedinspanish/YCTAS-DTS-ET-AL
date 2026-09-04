@@ -199,16 +199,9 @@ function showFeedback(correct, message) {
   el.className = correct ? "feedback-correct" : "feedback-retry";
 }
 
-/* ------------------------------------------------------------
-   CIRCLING — STUB. Not built yet.
-   When built: question + confirm = Narrator voice, always. Answer =
-   Male voice (never Paula's own voice — no personal representation
-   in this activity, per Curious C's rule). Randomize/recycle freely,
-   Leitner-box style, reusing Plan 1's engine.
-   ------------------------------------------------------------ */
-function initCircling() {
-  console.warn("Circling not yet implemented — content exists in game3_data.json under a future 'circling' key, engine not built.");
-}
+/* CIRCLING and TRIANGLING engines are built below (real Leitner
+   scheduling, character-blocking, etc.) — this section previously
+   held placeholder stubs, removed now that both are implemented. */
 
 /* ------------------------------------------------------------
    TRIANGLING — STUB. Not built yet.
@@ -220,9 +213,6 @@ function initCircling() {
    depending on who's active). Third-person (él/ella) questions ARE
    self-disambiguating and may be pooled freely across characters.
    ------------------------------------------------------------ */
-function initTriangling() {
-  console.warn("Triangling not yet implemented — requires activeCharacter + Leitner state tracked together. See spec doc before building.");
-}
 
 /* ============================================================
    CIRCLING — built against the REAL Leitner engine from Plan 1
@@ -242,6 +232,11 @@ function initTriangling() {
    ============================================================ */
 
 const CIRCLING_BOX_GAP = { 1: 2, 2: 4, 3: 6, 4: 8 };
+
+function startCircling() {
+  document.getElementById("start-circling-btn").style.display = "none";
+  initCircling();
+}
 let circlingItems = [];
 let circlingItemCounter = 0;
 let currentCirclingItem = null;
@@ -306,8 +301,9 @@ function renderCirclingAnswerInput(item) {
   btn.textContent = item.answer;
   btn.onclick = () => {
     flashTap(btn);
-    const isBareYesNo = item.answer === "Sí" || item.answer === "No";
-    playAudio(isBareYesNo ? item.answerAudio : item.answerAudio);
+    playAudio(item.answerAudio); // filename already resolved correctly at
+                                  // data-build time (narr_voc_ for bare
+                                  // Sí/No, reusing Vocabulary; m_ otherwise)
     submitCirclingAnswer(true); // tapping the shown correct-form answer;
                                   // full free-text/multi-choice entry is a
                                   // later build step, this proves the
@@ -376,10 +372,30 @@ function maybeShowHint() {
 function updateCirclingGateProgress() {
   const { total, atBox3Plus, allMastered } = circlingMasteryStats();
   const gateEl = document.getElementById("circling-gate-progress");
-  if (!gateEl) return;
-  gateEl.textContent = allMastered
-    ? "Complete — Triangling unlocked!"
-    : `${atBox3Plus} of ${total} mastered — Triangling unlocks once you've got them all!`;
+  if (gateEl) {
+    gateEl.textContent = allMastered
+      ? "Complete — Triangling unlocked!"
+      : `${atBox3Plus} of ${total} mastered — Triangling unlocks once you've got them all!`;
+  }
+  setTrianglingLocked(!allMastered);
+}
+
+function setTrianglingLocked(locked) {
+  const buttons = document.querySelectorAll("#triangling-char-select button");
+  buttons.forEach(btn => {
+    btn.disabled = locked;
+    btn.classList.toggle("locked", locked);
+  });
+  const elellaBtn = document.getElementById("start-elella-btn");
+  if (elellaBtn) elellaBtn.disabled = locked;
+  const lockMsg = document.getElementById("triangling-lock-message");
+  if (lockMsg) {
+    lockMsg.style.display = locked ? "block" : "none";
+  }
+  const elellaLockMsg = document.getElementById("elella-lock-message");
+  if (elellaLockMsg) {
+    elellaLockMsg.style.display = locked ? "block" : "none";
+  }
 }
 
 /* ============================================================
@@ -419,6 +435,11 @@ function selectTrianglingCharacter(name) {
   renderTrianglingQuestion();
 }
 
+function characterImg(name) {
+  const c = GAME_DATA.characters.find(c => c.name === name);
+  return c ? c.img : "";
+}
+
 function renderTrianglingQuestion() {
   const container = document.getElementById("triangling-container");
   if (!container) return;
@@ -433,7 +454,7 @@ function renderTrianglingQuestion() {
   playAudio(item.questionAudio); // Narrator auto-asks
 
   container.innerHTML = `
-    <div id="triangling-active-char">Talking to: ${trianglingActiveCharacter}</div>
+    <div id="triangling-active-char"><img src="${characterImg(trianglingActiveCharacter)}" alt="${trianglingActiveCharacter}"> Talking to: ${trianglingActiveCharacter}</div>
     <div id="triangling-question">${item.question}</div>
     <div id="triangling-word-bank"></div>
     <div id="triangling-built"></div>
@@ -473,4 +494,59 @@ function submitTrianglingAnswer(item) {
     trianglingIndex += 1;
     setTimeout(renderTrianglingQuestion, 1500);
   }, 1200);
+}
+
+/* ============================================================
+   TRIANGLING — él/ella (third-person cross-reference) block.
+   Per Triangling_Question_Selection_Spec_V1.md: these ARE
+   self-disambiguating regardless of order/context (e.g. "¿Quién es
+   un perro?" always means Clifford), unlike the tú-block. Freely
+   randomized, no character-blocking needed here.
+
+   Voice: question + confirm = Narrator. Answer = generic Male
+   voice (the class collectively, not any one character's own
+   voice) -- same single-tap pattern as Circling, since there's no
+   personal voice to break down word-by-word here.
+   ============================================================ */
+
+let elellaQueue = [];
+let elellaIndex = 0;
+
+function startTrianglingElElla() {
+  elellaQueue = [...GAME_DATA.trianglingElElla].sort(() => Math.random() - 0.5);
+  elellaIndex = 0;
+  renderElEllaQuestion();
+}
+
+function renderElEllaQuestion() {
+  const container = document.getElementById("elella-container");
+  if (!container) return;
+
+  if (elellaIndex >= elellaQueue.length) {
+    container.innerHTML = `<p>All done for now!</p>`;
+    return;
+  }
+
+  const item = elellaQueue[elellaIndex];
+  playAudio(item.questionAudio); // Narrator auto-asks
+
+  container.innerHTML = `
+    <div id="elella-question">${item.question}</div>
+    <div id="elella-answer-input"></div>
+    <div id="elella-feedback"></div>
+  `;
+  const btn = document.createElement("button");
+  btn.className = "circling-answer-btn";
+  btn.textContent = item.answer;
+  btn.onclick = () => {
+    flashTap(btn);
+    playAudio(item.answerAudio); // real Male-voice audio, single tap
+    setTimeout(() => {
+      playAudio(item.confirmAudio); // Narrator confirms
+      document.getElementById("elella-feedback").textContent = item.confirm;
+      elellaIndex += 1;
+      setTimeout(renderElEllaQuestion, 1500);
+    }, 1000);
+  };
+  document.getElementById("elella-answer-input").appendChild(btn);
 }

@@ -9,6 +9,13 @@
   h1 { font-size: 1.4rem; }
   .char-select button { margin: 4px; padding: 10px 16px; border-radius: 12px; border: 1px solid #ccc; background: white; cursor: pointer; }
   .char-select button.active { background: #4CB8FF; color: white; }
+  .char-select button.locked { opacity: 0.4; cursor: not-allowed; }
+  #triangling-lock-message { color: #c62828; font-weight: bold; margin-bottom: 8px; }
+  #elella-lock-message { color: #c62828; font-weight: bold; margin-bottom: 8px; }
+  #start-elella-btn:disabled, #check-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .char-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; }
+  #triangling-active-char { display: flex; align-items: center; gap: 8px; font-weight: bold; margin-bottom: 8px; }
+  #triangling-active-char img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
   #word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
   .word-tile { padding: 10px 14px; border-radius: 10px; border: 1px solid #ddd; background: white; cursor: pointer; }
   #built-sentence { min-height: 30px; font-weight: bold; padding: 10px; background: white; border-radius: 10px; margin: 10px 0; }
@@ -36,9 +43,20 @@
   </div>
   <div id="feedback"></div>
 
-  <h2>Triangling (tú-block only — preview)</h2>
+  <h2>Triangling — Tú (direct address, preview)</h2>
+  <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
   <div class="char-select" id="triangling-char-select"></div>
   <div id="triangling-container"></div>
+
+  <h2>Circling</h2>
+  <button id="start-circling-btn" onclick="startCircling()">Start Circling</button>
+  <div id="circling-container"></div>
+  <div id="circling-gate-progress"></div>
+
+  <h2>Triangling — Él/Ella (who is...?)</h2>
+  <div id="elella-lock-message">🔒 Complete Circling first to unlock this section!</div>
+  <button id="start-elella-btn" onclick="startTrianglingElElla()">Start</button>
+  <div id="elella-container"></div>
 
 <script src="game3.js"></script>
 <script>
@@ -47,7 +65,7 @@
     const sel = document.getElementById("char-select");
     GAME_DATA.characters.forEach(c => {
       const btn = document.createElement("button");
-      btn.textContent = c.name;
+      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
       btn.onclick = () => {
         document.querySelectorAll(".char-select button").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
@@ -57,16 +75,17 @@
     });
 
     const triSel = document.getElementById("triangling-char-select");
-    ["Paula","Lez","Clifford"].forEach(name => {
+    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
       const btn = document.createElement("button");
-      btn.textContent = name;
+      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
       btn.onclick = () => {
         document.querySelectorAll("#triangling-char-select button").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        selectTrianglingCharacter(name);
+        selectTrianglingCharacter(c.name);
       };
       triSel.appendChild(btn);
     });
+    setTrianglingLocked(true); // locked by default until Circling is fully mastered -- covers BOTH the tú-block and él/ella sections
   });
 </script>
 </body>
