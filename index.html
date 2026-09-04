@@ -10,12 +10,11 @@
   .char-select button { margin: 4px; padding: 10px 16px; border-radius: 12px; border: 1px solid #ccc; background: white; cursor: pointer; }
   .char-select button.active { background: #4CB8FF; color: white; }
   .char-select button.locked { opacity: 0.4; cursor: not-allowed; }
-  #triangling-lock-message { color: #c62828; font-weight: bold; margin-bottom: 8px; }
-  #elella-lock-message { color: #c62828; font-weight: bold; margin-bottom: 8px; }
-  #start-elella-btn:disabled, #check-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .char-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; }
+  #triangling-lock-message, #elella-lock-message, #circling-lock-message, #dts-lock-message { color: #c62828; font-weight: bold; margin-bottom: 8px; }
+  #start-elella-btn:disabled, #check-btn:disabled, #start-circling-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .char-thumb { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; display: block; margin: 0 auto 6px; }
   #triangling-active-char { display: flex; align-items: center; gap: 8px; font-weight: bold; margin-bottom: 8px; }
-  #triangling-active-char img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+  #triangling-active-char img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
   #word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
   .word-tile { padding: 10px 14px; border-radius: 10px; border: 1px solid #ddd; background: white; cursor: pointer; }
   #built-sentence { min-height: 30px; font-weight: bold; padding: 10px; background: white; border-radius: 10px; margin: 10px 0; }
@@ -34,6 +33,7 @@
   <div id="vocab-list"></div>
 
   <h2>DTS — Role Play</h2>
+  <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
   <div class="char-select" id="char-select"></div>
   <div id="word-bank"></div>
   <div id="built-sentence"></div>
@@ -49,6 +49,7 @@
   <div id="triangling-container"></div>
 
   <h2>Circling</h2>
+  <div id="circling-lock-message">🔒 Hear all Vocabulary words first to unlock Circling!</div>
   <button id="start-circling-btn" onclick="startCircling()">Start Circling</button>
   <div id="circling-container"></div>
   <div id="circling-gate-progress"></div>
@@ -86,6 +87,8 @@
       triSel.appendChild(btn);
     });
     setTrianglingLocked(true); // locked by default until Circling is fully mastered -- covers BOTH the tú-block and él/ella sections
+    setCirclingLocked(true);   // locked until Vocabulary is fully heard
+    setDtsLocked(true);        // locked until Triangling is fully complete
   });
 </script>
 </body>

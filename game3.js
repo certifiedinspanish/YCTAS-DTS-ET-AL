@@ -27,10 +27,54 @@ async function loadGameData() {
   return GAME_DATA;
 }
 
-/* ------------------------------------------------------------
-   VOCABULARY — tap-to-hear word bank (23 words)
-   Every tap plays audio immediately. No text-only elements.
-   ------------------------------------------------------------ */
+/* ============================================================
+   4-PHASE SEQUENTIAL GATE: Vocabulary -> Circling -> Triangling ->
+   DTS. Each phase locked until the previous is mastered. Per
+   handover design (confirmed, not new): "master the meanings of
+   words" (Vocabulary) -> "basic comprehension... one word"
+   (Circling) -> "comprehension... complete sentences" (Triangling)
+   -> DTS.
+   ============================================================ */
+let vocabHeardWords = new Set();
+let trianglingTuCompleted = new Set();
+let trianglingElEllaCompleted = new Set();
+
+function vocabMastered() {
+  return vocabHeardWords.size >= GAME_DATA.vocabulary.length;
+}
+
+function trianglingMastered() {
+  const tuTotal = GAME_DATA.triangling.length;
+  const elEllaTotal = GAME_DATA.trianglingElElla.length;
+  return trianglingTuCompleted.size >= tuTotal && trianglingElEllaCompleted.size >= elEllaTotal;
+}
+
+function setCirclingLocked(locked) {
+  const btn = document.getElementById("start-circling-btn");
+  if (btn) btn.disabled = locked;
+  const msg = document.getElementById("circling-lock-message");
+  if (msg) msg.style.display = locked ? "block" : "none";
+}
+
+function setDtsLocked(locked) {
+  const buttons = document.querySelectorAll("#char-select button");
+  buttons.forEach(btn => {
+    btn.disabled = locked;
+    btn.classList.toggle("locked", locked);
+  });
+  const msg = document.getElementById("dts-lock-message");
+  if (msg) msg.style.display = locked ? "block" : "none";
+}
+
+function checkGateProgression() {
+  setCirclingLocked(!vocabMastered());
+  // Triangling's own lock (setTrianglingLocked) already checks Circling
+  // mastery separately -- this just also confirms Vocabulary is done
+  // first, since the chain is sequential, not just pairwise.
+  setDtsLocked(!trianglingMastered());
+}
+
+
 function renderVocabulary(containerEl) {
   containerEl.innerHTML = "";
   GAME_DATA.vocabulary.forEach(entry => {
@@ -39,8 +83,10 @@ function renderVocabulary(containerEl) {
     btn.textContent = entry.word;
     btn.setAttribute("aria-label", entry.word);
     btn.onclick = () => {
-      flashTap(btn);           // visible feedback on EVERY tap, audio or not
+      flashTap(btn);
       playAudio(entry.audio);
+      vocabHeardWords.add(entry.word);
+      checkGateProgression();
     };
     containerEl.appendChild(btn);
   });
@@ -491,6 +537,8 @@ function submitTrianglingAnswer(item) {
     // Narrator confirms -- real audio.
     playAudio(item.confirmAudio);
     document.getElementById("triangling-feedback").textContent = item.confirm;
+    trianglingTuCompleted.add(item.id);
+    checkGateProgression();
     trianglingIndex += 1;
     setTimeout(renderTrianglingQuestion, 1500);
   }, 1200);
@@ -544,6 +592,8 @@ function renderElEllaQuestion() {
     setTimeout(() => {
       playAudio(item.confirmAudio); // Narrator confirms
       document.getElementById("elella-feedback").textContent = item.confirm;
+      trianglingElEllaCompleted.add(item.id);
+      checkGateProgression();
       elellaIndex += 1;
       setTimeout(renderElEllaQuestion, 1500);
     }, 1000);
