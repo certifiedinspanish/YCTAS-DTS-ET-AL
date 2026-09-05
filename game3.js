@@ -39,6 +39,44 @@ let vocabHeardWords = new Set();
 let trianglingTuCompleted = new Set();
 let trianglingElEllaCompleted = new Set();
 
+/* ============================================================
+   PROGRESS PERSISTENCE — REAL BUG FOUND AND FIXED.
+   Previously, vocabQuizItems / circlingItems / trianglingTuCompleted /
+   trianglingElEllaCompleted were plain in-memory variables with zero
+   localStorage anywhere in this file. Any page reload or navigation
+   away and back wiped all mastery progress, so a gate that had genuinely
+   just been earned would report itself locked again on the very next
+   load — exactly the "Vocabulary confirmed mastered, Circling still
+   locked" symptom. Fixed with a small save/restore layer, matching the
+   persistence pattern already used elsewhere in this project (Plan 1's
+   boxes, the vocab_match.js rebuild).
+   ============================================================ */
+const PROGRESS_KEY = "yctas_dts_staging_progress_v1";
+
+function saveProgress() {
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      vocabQuizItems,
+      circlingItems,
+      trianglingTuCompleted: [...trianglingTuCompleted],
+      trianglingElEllaCompleted: [...trianglingElEllaCompleted],
+    }));
+  } catch (e) { /* storage unavailable — fail silently, nothing to gate on */ }
+}
+
+function restoreProgress() {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (saved.vocabQuizItems) vocabQuizItems = saved.vocabQuizItems;
+    if (saved.circlingItems) circlingItems = saved.circlingItems;
+    if (saved.trianglingTuCompleted) trianglingTuCompleted = new Set(saved.trianglingTuCompleted);
+    if (saved.trianglingElEllaCompleted) trianglingElEllaCompleted = new Set(saved.trianglingElEllaCompleted);
+    return true;
+  } catch (e) { return false; }
+}
+
 function vocabMastered() {
   // FIXED: "heard once" was never real mastery. Now reuses the same
   // Leitner engine already proven for Circling -- all 23 words must
@@ -431,6 +469,7 @@ function submitCirclingAnswer(correct) {
     item.currentBox = 1;
     item.dueAtCount = circlingItemCounter + CIRCLING_BOX_GAP[1];
   }
+  saveProgress();
 
   // Narrator ALWAYS confirms in a full sentence, correct or incorrect.
   // FIXED: previously used a fixed 1200ms setTimeout guess before
@@ -455,7 +494,10 @@ function showCirclingConfirm(text) {
 function circlingMasteryStats() {
   const total = circlingItems.length;
   const atBox3Plus = circlingItems.filter(it => it.currentBox >= 3).length;
-  return { total, atBox3Plus, allMastered: atBox3Plus === total };
+  // FIXED: total === 0 (Circling never even started) previously counted
+  // as "all mastered" (0 === 0), which would wrongly unlock Triangling
+  // for a user who hadn't done any Circling at all.
+  return { total, atBox3Plus, allMastered: total > 0 && atBox3Plus === total };
 }
 
 function maybeShowHint() {
@@ -624,6 +666,7 @@ function submitTrianglingAnswer(item) {
     playAudio(item.confirmAudio, () => {
       document.getElementById("triangling-feedback").textContent = item.confirm;
       trianglingTuCompleted.add(item.id);
+      saveProgress();
       checkGateProgression();
       trianglingIndex += 1;
       setTimeout(renderTrianglingQuestion, 500);
@@ -681,6 +724,7 @@ function renderElEllaQuestion() {
       playAudio(item.confirmAudio, () => {
         document.getElementById("elella-feedback").textContent = item.confirm;
         trianglingElEllaCompleted.add(item.id);
+        saveProgress();
         checkGateProgression();
         elellaIndex += 1;
         setTimeout(renderElEllaQuestion, 500);
@@ -782,6 +826,7 @@ function submitVocabQuizAnswer(correct) {
     item.dueAtCount = vocabQuizItemCounter + CIRCLING_BOX_GAP[1];
   }
   document.getElementById("vocab-quiz-feedback").textContent = correct ? "¡Correcto!" : `"${item.word}" means "${item.english}"`;
+  saveProgress();
   checkGateProgression();
   setTimeout(renderNextVocabQuizItem, 900);
 }

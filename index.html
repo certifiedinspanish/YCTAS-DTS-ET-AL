@@ -183,9 +183,15 @@
       };
       triSel.appendChild(btn);
     });
-    setTrianglingLocked(true); // locked by default until Circling is fully mastered -- covers BOTH the tú-block and él/ella sections
-    setCirclingLocked(true);   // locked until Vocabulary is fully heard
-    setDtsLocked(true);        // locked until Triangling is fully complete
+    // FIXED: this used to unconditionally lock everything on every single
+    // page load, no matter what progress existed — combined with
+    // vocabQuizItems/circlingItems/trianglingCompleted never being saved
+    // anywhere, this meant a genuinely-earned unlock always reverted the
+    // moment the page reloaded. Now restores real saved progress first,
+    // then computes each gate from that actual state.
+    restoreProgress();
+    checkGateProgression();       // sets Circling lock + DTS lock
+    updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
   });
 </script>
 </body>
