@@ -92,5 +92,29 @@
     setDtsLocked(false);
   });
 </script>
+  <script>
+(async function() {
+  const res = await fetch('status.json?_=' + Date.now());
+  const status = await res.json();
+
+  const expired = status.expires && new Date() > new Date(status.expires);
+
+  if (!status.active || expired) {
+    document.body.innerHTML = `<div style="text-align:center;padding:60px;font-family:sans-serif;">
+      <p>${status.offlineMessage}</p></div>`;
+    return;
+  }
+
+  const unlocked = sessionStorage.getItem('appUnlocked');
+  if (unlocked !== 'true') {
+    const code = prompt('Enter passcode:');
+    if (code !== status.passcode) {
+      document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
+      return;
+    }
+    sessionStorage.setItem('appUnlocked', 'true');
+  }
+})();
+</script>
 </body>
 </html>
