@@ -733,22 +733,28 @@ function renderNextVocabQuizItem() {
     return;
   }
 
-  playAudio(item.audio); // hear the word first
-  const distractors = GAME_DATA.vocabulary
-    .map(v => v.word).filter(w => w !== item.word)
+  playAudio(item.audio); // hear the Spanish word — the question
+  // Options are ENGLISH (the meaning), not Spanish (the sound). Hearing
+  // Spanish and picking Spanish just tests spelling recognition, not
+  // comprehension — that was the bug. Distractors pulled from other
+  // words' English meanings, correct answer is this word's English.
+  const distractorEntries = GAME_DATA.vocabulary
+    .filter(v => v.word !== item.word)
     .sort(() => Math.random() - 0.5).slice(0, 3);
-  const options = [item.word, ...distractors].sort(() => Math.random() - 0.5);
+  const options = [
+    { label: item.english, isCorrect: true },
+    ...distractorEntries.map(v => ({ label: v.english, isCorrect: false })),
+  ].sort(() => Math.random() - 0.5);
 
   container.innerHTML = `<div id="vocab-quiz-options"></div><div id="vocab-quiz-feedback"></div>`;
   const optEl = document.getElementById("vocab-quiz-options");
-  options.forEach(word => {
+  options.forEach(opt => {
     const btn = document.createElement("button");
     btn.className = "circling-answer-btn";
-    btn.textContent = word;
+    btn.textContent = opt.label;
     btn.onclick = () => {
       flashTap(btn);
-      const correct = word === item.word;
-      submitVocabQuizAnswer(correct);
+      submitVocabQuizAnswer(opt.isCorrect);
     };
     optEl.appendChild(btn);
   });
@@ -765,29 +771,47 @@ function submitVocabQuizAnswer(correct) {
     item.currentBox = 1;
     item.dueAtCount = vocabQuizItemCounter + CIRCLING_BOX_GAP[1];
   }
-  document.getElementById("vocab-quiz-feedback").textContent = correct ? "¡Correcto!" : `That was "${item.word}"`;
+  document.getElementById("vocab-quiz-feedback").textContent = correct ? "¡Correcto!" : `"${item.word}" means "${item.english}"`;
   checkGateProgression();
   setTimeout(renderNextVocabQuizItem, 900);
 }
 
 /* ============================================================
-   VOCABULARY MATCH GAME — practice only, does not gate anything
-   (matches Plan 1's own "Match Game = Practice" pattern, separate
-   from its real Mastery Test). Classic memory/concentration: all 23
-   words appear twice, tap two tiles, audio plays, matching pairs
-   stay revealed.
+   VOCABULARY MATCH GAME — practice only, does not gate anything.
+   REBUILT: previous version paired each Spanish word with a duplicate
+   of itself (no English at all) and hid everything behind "?" tiles
+   across all 23 words at once. This version pairs Spanish <-> English
+   (the actual point of the exercise), shows everything visibly from
+   the start (tap-to-pair, not flip-and-guess), and works in sets of 6
+   at a time instead of all 23/24 in one grid.
    ============================================================ */
+const MATCH_SET_SIZE = 6;
+let matchGameQueue = [];   // remaining vocabulary items not yet done this session
 let matchGameTiles = [];
-let matchGameFlipped = [];
-let matchGameMatched = new Set();
+let matchGameSelected = null;
+let matchGameLocked = false;
 
 function startVocabMatchGame() {
-  const words = GAME_DATA.vocabulary.map(v => ({ word: v.word, audio: v.audio }));
-  matchGameTiles = [...words, ...words]
-    .map((w, i) => ({ ...w, id: i }))
-    .sort(() => Math.random() - 0.5);
-  matchGameFlipped = [];
-  matchGameMatched = new Set();
+  matchGameQueue = [...GAME_DATA.vocabulary].sort(() => Math.random() - 0.5);
+  loadNextMatchSet();
+}
+
+function loadNextMatchSet() {
+  const setItems = matchGameQueue.splice(0, MATCH_SET_SIZE);
+  if (setItems.length === 0) {
+    const container = document.getElementById("match-game-container");
+    if (container) container.innerHTML = `<p>Set complete! 🎉</p>
+      <button class="circling-answer-btn" onclick="startVocabMatchGame()">Practice again</button>`;
+    return;
+  }
+  const raw = [];
+  setItems.forEach((v, i) => {
+    raw.push({ pairId: i, side: 'es', label: v.word, audio: v.audio, matched: false });
+    raw.push({ pairId: i, side: 'en', label: v.english, audio: null, matched: false });
+  });
+  matchGameTiles = raw.sort(() => Math.random() - 0.5).map((t, i) => ({ ...t, idx: i }));
+  matchGameSelected = null;
+  matchGameLocked = false;
   renderMatchGame();
 }
 
@@ -796,37 +820,51 @@ function renderMatchGame() {
   if (!container) return;
   container.innerHTML = "";
   matchGameTiles.forEach(tile => {
+    if (tile.matched) return; // matched pairs disappear, not hidden behind "?"
     const btn = document.createElement("button");
-    btn.className = "word-tile";
-    const isFlipped = matchGameFlipped.some(f => f.id === tile.id);
-    const isMatched = matchGameMatched.has(tile.word + tile.id);
-    btn.textContent = (isFlipped || isMatched) ? tile.word : "?";
-    if (isMatched) btn.disabled = true;
-    btn.onclick = () => handleMatchTileClick(tile);
+    btn.className = "word-tile" + (matchGameSelected === tile.idx ? " selected" : "");
+    btn.textContent = tile.label; // always visible — no "?" hiding
+    btn.onclick = () => handleMatchTileClick(tile.idx);
     container.appendChild(btn);
   });
 }
 
-function handleMatchTileClick(tile) {
-  if (matchGameFlipped.length >= 2) return;
-  if (matchGameFlipped.some(f => f.id === tile.id)) return;
-  if (matchGameMatched.has(tile.word + tile.id)) return;
+function handleMatchTileClick(idx) {
+  if (matchGameLocked) return;
+  const tile = matchGameTiles[idx];
+  if (tile.matched) return;
+  if (tile.audio) playAudio(tile.audio);
 
-  flashTap(document.activeElement);
-  playAudio(tile.audio);
-  matchGameFlipped.push(tile);
-  renderMatchGame();
+  if (matchGameSelected === null) {
+    matchGameSelected = idx;
+    renderMatchGame();
+    return;
+  }
+  if (matchGameSelected === idx) {
+    matchGameSelected = null;
+    renderMatchGame();
+    return;
+  }
 
-  if (matchGameFlipped.length === 2) {
-    const [a, b] = matchGameFlipped;
-    if (a.word === b.word) {
-      matchGameMatched.add(a.word + a.id);
-      matchGameMatched.add(b.word + b.id);
-      matchGameFlipped = [];
-      renderMatchGame();
-    } else {
-      setTimeout(() => { matchGameFlipped = []; renderMatchGame(); }, 800);
-    }
+  const a = matchGameTiles[matchGameSelected];
+  const b = tile;
+  const isMatch = a.pairId === b.pairId && a.side !== b.side;
+  matchGameSelected = null;
+
+  if (isMatch) {
+    matchGameLocked = true;
+    a.matched = true; b.matched = true;
+    renderMatchGame();
+    setTimeout(() => {
+      matchGameLocked = false;
+      if (matchGameTiles.every(t => t.matched)) {
+        loadNextMatchSet();
+      } else {
+        renderMatchGame();
+      }
+    }, 300);
+  } else {
+    renderMatchGame();
   }
 }
 

@@ -44,117 +44,140 @@
     {
       "word": "alta",
       "key": "alta",
-      "audio": "narr_voc_alta.mp3"
+      "audio": "narr_voc_alta.mp3",
+      "english": "tall"
     },
     {
       "word": "chica",
       "key": "chica",
-      "audio": "narr_voc_chica.mp3"
+      "audio": "narr_voc_chica.mp3",
+      "english": "girl"
     },
     {
       "word": "chico",
       "key": "chico",
-      "audio": "narr_voc_chico.mp3"
+      "audio": "narr_voc_chico.mp3",
+      "english": "boy"
     },
     {
       "word": "elefante",
       "key": "elefante",
-      "audio": "narr_voc_elefante.mp3"
+      "audio": "narr_voc_elefante.mp3",
+      "english": "elephant"
     },
     {
       "word": "eres",
       "key": "eres",
-      "audio": "narr_voc_eres.mp3"
+      "audio": "narr_voc_eres.mp3",
+      "english": "you are"
     },
     {
       "word": "es",
       "key": "es",
-      "audio": "narr_voc_es.mp3"
+      "audio": "narr_voc_es.mp3",
+      "english": "is"
     },
     {
       "word": "grande",
       "key": "grande",
-      "audio": "narr_voc_grande.mp3"
+      "audio": "narr_voc_grande.mp3",
+      "english": "big"
     },
     {
       "word": "pequeño",
       "key": "pequeño",
-      "audio": "narr_voc_pequeno.mp3"
+      "audio": "narr_voc_pequeno.mp3",
+      "english": "small"
     },
     {
       "word": "perro",
       "key": "perro",
-      "audio": "narr_voc_perro.mp3"
+      "audio": "narr_voc_perro.mp3",
+      "english": "dog"
     },
     {
       "word": "rico",
       "key": "rico",
-      "audio": "narr_voc_rico.mp3"
+      "audio": "narr_voc_rico.mp3",
+      "english": "rich"
     },
     {
       "word": "soy",
       "key": "soy",
-      "audio": "narr_voc_soy.mp3"
+      "audio": "narr_voc_soy.mp3",
+      "english": "I am"
     },
     {
       "word": "un",
       "key": "un",
-      "audio": "narr_voc_un.mp3"
+      "audio": "narr_voc_un.mp3",
+      "english": "a/an (masc.)"
     },
     {
       "word": "una",
       "key": "una",
-      "audio": "narr_voc_una.mp3"
+      "audio": "narr_voc_una.mp3",
+      "english": "a/an (fem.)"
     },
     {
       "word": "Clifford",
       "key": "clifford",
-      "audio": "narr_voc_clifford.mp3"
+      "audio": "narr_voc_clifford.mp3",
+      "english": "Clifford"
     },
     {
       "word": "Harry",
       "key": "harry",
-      "audio": "narr_voc_harry.mp3"
+      "audio": "narr_voc_harry.mp3",
+      "english": "Harry"
     },
     {
       "word": "Lez",
       "key": "lez",
-      "audio": "narr_voc_lez.mp3"
+      "audio": "narr_voc_lez.mp3",
+      "english": "Lez"
     },
     {
       "word": "Paula",
       "key": "paula",
-      "audio": "narr_voc_paula.mp3"
+      "audio": "narr_voc_paula.mp3",
+      "english": "Paula"
     },
     {
       "word": "Sí",
       "key": "si",
-      "audio": "narr_voc_si.mp3"
+      "audio": "narr_voc_si.mp3",
+      "english": "yes"
     },
     {
       "word": "No",
       "key": "no",
-      "audio": "narr_voc_no.mp3"
+      "audio": "narr_voc_no.mp3",
+      "english": "no"
     },
     {
       "word": "y",
       "key": "y",
-      "audio": "narr_voc_y.mp3"
+      "audio": "narr_voc_y.mp3",
+      "english": "and"
     },
     {
       "word": "o",
       "key": "o",
-      "audio": "narr_voc_o.mp3"
+      "audio": "narr_voc_o.mp3",
+      "english": "or"
     },
     {
       "word": "Quién",
       "key": "quién",
-      "audio": "narr_voc_quien.mp3"
+      "audio": "narr_voc_quien.mp3",
+      "english": "who"
     },
     {
       "word": "Cómo es",
       "key": "como_es",
-      "audio": "narr_voc_como_es.mp3"
+      "audio": "narr_voc_como_es.mp3",
+      "english": "what is ... like"
     }
   ],
   "answerBank": {
