@@ -700,10 +700,20 @@ let vocabQuizItems = [];
 let vocabQuizItemCounter = 0;
 let currentVocabQuizItem = null;
 
+const NON_TRANSLATABLE_WORDS = new Set(["Clifford", "Harry", "Lez", "Paula"]);
+
 function initVocabQuiz() {
-  vocabQuizItems = GAME_DATA.vocabulary.map(v => ({
-    word: v.word, audio: v.audio, currentBox: 0, status: "new", dueAtCount: null,
-  }));
+  // FIXED: previously dropped the "english" field entirely when building
+  // this internal list (only word/audio were copied), which is why the
+  // correct answer never visibly appeared — its button showed blank/
+  // undefined text instead of the real English word. Also now excludes
+  // the 4 character names, which aren't really "vocabulary" to translate.
+  vocabQuizItems = GAME_DATA.vocabulary
+    .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
+    .map(v => ({
+      word: v.word, english: v.english, audio: v.audio,
+      currentBox: 0, status: "new", dueAtCount: null,
+    }));
   vocabQuizItemCounter = 0;
   renderNextVocabQuizItem();
 }
@@ -738,7 +748,7 @@ function renderNextVocabQuizItem() {
   // Spanish and picking Spanish just tests spelling recognition, not
   // comprehension — that was the bug. Distractors pulled from other
   // words' English meanings, correct answer is this word's English.
-  const distractorEntries = GAME_DATA.vocabulary
+  const distractorEntries = vocabQuizItems
     .filter(v => v.word !== item.word)
     .sort(() => Math.random() - 0.5).slice(0, 3);
   const options = [
@@ -792,7 +802,9 @@ let matchGameSelected = null;
 let matchGameLocked = false;
 
 function startVocabMatchGame() {
-  matchGameQueue = [...GAME_DATA.vocabulary].sort(() => Math.random() - 0.5);
+  matchGameQueue = GAME_DATA.vocabulary
+    .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
+    .sort(() => Math.random() - 0.5);
   loadNextMatchSet();
 }
 

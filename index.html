@@ -5,32 +5,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cuatro Amigos — DTS Staging</title>
 <style>
-  body { font-family: -apple-system, "Segoe UI", sans-serif; background: #FFF8ED; color: #3D2C4E; max-width: 640px; margin: 0 auto; padding: 20px; }
-  h1 { font-size: 1.4rem; }
-  h3 { font-size: 1rem; color: #8A7A9B; margin-top: 16px; }
-  .story-line { font-size: 1.1rem; font-weight: 500; margin: 6px 0; }
-  .char-select button { margin: 4px; padding: 10px 16px; border-radius: 12px; border: 1px solid #ccc; background: white; cursor: pointer; }
-  .char-select button.active { background: #4CB8FF; color: white; }
-  .char-select button.locked { opacity: 0.4; cursor: not-allowed; }
-  #triangling-lock-message, #elella-lock-message, #circling-lock-message, #dts-lock-message { color: #c62828; font-weight: bold; margin-bottom: 8px; }
-  #start-elella-btn:disabled, #check-btn:disabled, #start-circling-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .char-thumb { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; display: block; margin: 0 auto 6px; }
-  #triangling-active-char { display: flex; align-items: center; gap: 8px; font-weight: bold; margin-bottom: 8px; }
-  #triangling-active-char img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
-  #word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-  .word-tile { padding: 10px 14px; border-radius: 10px; border: 1px solid #ddd; background: white; cursor: pointer; }
-  .word-tile.selected { border-color: #FF8A3D; background: #FFF3E0; transform: scale(1.03); }
-  #built-sentence { min-height: 30px; font-weight: bold; padding: 10px; background: white; border-radius: 10px; margin: 10px 0; }
-  .actions button { padding: 12px 20px; border-radius: 12px; border: none; color: white; font-weight: bold; margin-right: 8px; cursor: pointer; }
-  #check-btn, #triangling-check-btn { background: #4CD97D; }
-  #clear-btn, #triangling-clear-btn { background: #FF6B5B; }
-  .feedback-correct { color: #2e7d32; font-weight: bold; }
-  .feedback-retry { color: #c62828; font-weight: bold; }
-  .vocab-word { padding: 8px 12px; margin: 4px; border-radius: 10px; border: 1px solid #ddd; background: #FFF; cursor: pointer; }
+  :root {
+    --navy: #1B2A4A; --orange: #FF8A3D; --green: #2FBE73; --coral: #E85B5B;
+    --cream: #FFF8ED; --panel: #FFFFFF; --panel-warm: #FFF3E0; --line: #EDE3D6;
+    --text-muted: #8A7A9B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", sans-serif; background: var(--cream);
+    color: var(--navy); max-width: 640px; margin: 0 auto; padding: 24px 16px 60px;
+    line-height: 1.5;
+  }
+  h1 {
+    font-size: 1.5rem; font-weight: 800; color: var(--orange); text-align: center;
+    margin: 0 0 20px;
+  }
+  h2 {
+    font-size: 1.1rem; font-weight: 800; color: var(--navy); margin: 32px 0 12px;
+    padding-bottom: 8px; border-bottom: 3px solid var(--panel-warm);
+  }
+  h3 { font-size: 0.95rem; color: var(--text-muted); margin: 18px 0 8px; font-weight: 700; }
+
+  section, #story-container, #vocab-list, #match-game-container, #vocab-quiz-container,
+  #circling-container, #triangling-container, #elella-container {
+    background: var(--panel); border-radius: 16px; padding: 4px;
+  }
+
+  .story-line {
+    font-size: 1.1rem; font-weight: 600; margin: 8px 0; padding: 10px 14px;
+    background: var(--panel-warm); border-radius: 10px;
+  }
+
+  button {
+    font-family: inherit; font-size: 0.95rem; cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  button:active { transform: scale(0.97); }
+
+  /* Top-level "start this activity" buttons */
+  body > button, h3 + button, #start-elella-btn, #start-circling-btn {
+    display: block; width: 100%; padding: 14px; margin: 10px 0; border: none;
+    border-radius: 14px; background: var(--orange); color: #fff; font-weight: 800;
+    font-size: 1rem; box-shadow: 0 2px 6px rgba(255,138,61,0.3);
+  }
+
+  .char-select { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0; }
+  .char-select button {
+    padding: 10px 16px; border-radius: 14px; border: 2px solid var(--line);
+    background: var(--panel); font-weight: 700; color: var(--navy);
+  }
+  .char-select button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .char-select button.locked { opacity: 0.35; cursor: not-allowed; }
+
+  #triangling-lock-message, #elella-lock-message, #circling-lock-message, #dts-lock-message {
+    color: var(--coral); font-weight: 700; background: #FDEAEA; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 10px; text-align: center; font-size: 0.9rem;
+  }
+  #start-elella-btn:disabled, #check-btn:disabled, #start-circling-btn:disabled {
+    opacity: 0.35; cursor: not-allowed; box-shadow: none;
+  }
+
+  .char-thumb { width: 84px; height: 84px; object-fit: cover; border-radius: 50%; display: block; margin: 0 auto 6px; border: 3px solid var(--panel-warm); }
+  #triangling-active-char {
+    display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 12px;
+    background: var(--panel-warm); border-radius: 14px; padding: 10px 14px;
+  }
+  #triangling-active-char img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+
+  #word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+  .word-tile {
+    padding: 10px 16px; border-radius: 12px; border: none; background: var(--orange);
+    color: #fff; font-weight: 700;
+  }
+  .word-tile.selected { background: var(--navy); transform: scale(1.05); }
+
+  #built-sentence {
+    min-height: 44px; font-weight: 700; font-size: 1.05rem; padding: 12px 14px;
+    background: var(--panel-warm); border: 2px dashed var(--orange); border-radius: 14px;
+    margin: 12px 0; display: flex; align-items: center;
+  }
+
+  .actions { display: flex; gap: 10px; }
+  .actions button {
+    flex: 1; padding: 14px; border-radius: 14px; border: none; color: white;
+    font-weight: 800; font-size: 1rem;
+  }
+  #check-btn, #triangling-check-btn { background: var(--green); }
+  #clear-btn, #triangling-clear-btn { background: #E5E5E5; color: var(--navy); }
+
+  .feedback-correct { color: var(--green); font-weight: 800; display: block; margin-top: 10px; text-align: center; }
+  .feedback-retry { color: var(--coral); font-weight: 800; display: block; margin-top: 10px; text-align: center; }
+
+  .vocab-word {
+    padding: 10px 16px; margin: 4px; border-radius: 12px; border: 2px solid var(--line);
+    background: var(--panel); cursor: pointer; font-weight: 700; color: var(--navy);
+    display: inline-block;
+  }
+
+  #match-game-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 14px 0; }
+
+  .circling-answer-btn {
+    display: block; width: 100%; padding: 12px; margin: 6px 0; border-radius: 12px;
+    border: 2px solid var(--line); background: var(--panel); color: var(--navy);
+    font-weight: 700; font-size: 1rem;
+  }
+  .circling-answer-btn:hover { border-color: var(--orange); }
 </style>
 </head>
 <body>
-  <h1>Cuatro Amigos — Staging Preview</h1>
+  <h1>🎭 Cuatro Amigos</h1>
 
   <button onclick="playStory()">▶ Play Story</button>
   <div id="story-container"></div>
