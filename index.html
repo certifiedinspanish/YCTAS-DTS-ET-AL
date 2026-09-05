@@ -8,6 +8,7 @@
   body { font-family: -apple-system, "Segoe UI", sans-serif; background: #FFF8ED; color: #3D2C4E; max-width: 640px; margin: 0 auto; padding: 20px; }
   h1 { font-size: 1.4rem; }
   h3 { font-size: 1rem; color: #8A7A9B; margin-top: 16px; }
+  .story-line { font-size: 1.1rem; font-weight: 500; margin: 6px 0; }
   .char-select button { margin: 4px; padding: 10px 16px; border-radius: 12px; border: 1px solid #ccc; background: white; cursor: pointer; }
   .char-select button.active { background: #4CB8FF; color: white; }
   .char-select button.locked { opacity: 0.4; cursor: not-allowed; }
@@ -20,8 +21,8 @@
   .word-tile { padding: 10px 14px; border-radius: 10px; border: 1px solid #ddd; background: white; cursor: pointer; }
   #built-sentence { min-height: 30px; font-weight: bold; padding: 10px; background: white; border-radius: 10px; margin: 10px 0; }
   .actions button { padding: 12px 20px; border-radius: 12px; border: none; color: white; font-weight: bold; margin-right: 8px; cursor: pointer; }
-  #check-btn { background: #4CD97D; }
-  #clear-btn { background: #FF6B5B; }
+  #check-btn, #triangling-check-btn { background: #4CD97D; }
+  #clear-btn, #triangling-clear-btn { background: #FF6B5B; }
   .feedback-correct { color: #2e7d32; font-weight: bold; }
   .feedback-retry { color: #c62828; font-weight: bold; }
   .vocab-word { padding: 8px 12px; margin: 4px; border-radius: 10px; border: 1px solid #ddd; background: #FFF; cursor: pointer; }
@@ -30,8 +31,19 @@
 <body>
   <h1>Cuatro Amigos — Staging Preview</h1>
 
+  <button onclick="playStory()">▶ Play Story</button>
+  <div id="story-container"></div>
+
   <h2>1. Vocabulary</h2>
   <div id="vocab-list"></div>
+
+  <h3>Practice: Match Game</h3>
+  <button onclick="startVocabMatchGame()">Start Match Game</button>
+  <div id="match-game-container"></div>
+
+  <h3>Mastery Test</h3>
+  <button onclick="initVocabQuiz()">Start Mastery Test</button>
+  <div id="vocab-quiz-container"></div>
 
   <h2>2. Circling</h2>
   <div id="circling-lock-message">🔒 Hear all Vocabulary words first to unlock Circling!</div>
@@ -87,35 +99,10 @@
       };
       triSel.appendChild(btn);
     });
-    setTrianglingLocked(false);
-    setCirclingLocked(false);
-    setDtsLocked(false);
+    setTrianglingLocked(true); // locked by default until Circling is fully mastered -- covers BOTH the tú-block and él/ella sections
+    setCirclingLocked(true);   // locked until Vocabulary is fully heard
+    setDtsLocked(true);        // locked until Triangling is fully complete
   });
 </script>
-  <script>
-(async function() {
-  const res = await fetch('status.json?_=' + Date.now());
-  const status = await res.json();
-
-  const expired = status.expires && new Date() > new Date(status.expires);
-
-  if (!status.active || expired) {
-    document.body.innerHTML = `<div style="text-align:center;padding:60px;font-family:sans-serif;">
-      <p>${status.offlineMessage}</p></div>`;
-    return;
-  }
-
-  const unlocked = sessionStorage.getItem('appUnlocked');
-  if (unlocked !== 'true') {
-    const code = prompt('Enter passcode:');
-    if (code !== status.passcode) {
-      document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
-      return;
-    }
-    sessionStorage.setItem('appUnlocked', 'true');
-  }
-})();
-</script>
-  <script data-goatcounter="https://yctas-dts-tracker.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

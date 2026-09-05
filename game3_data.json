@@ -1270,5 +1270,42 @@
       "confirm": "Sí, Clifford es grande.",
       "confirmAudio": "narr_si_clifford_es_grande.mp3"
     }
+  ],
+  "story": [
+    {
+      "role": "title",
+      "text": "Cuatro Amigos",
+      "audio": "narr_cuatro_amigos.mp3"
+    },
+    {
+      "role": "intro",
+      "text": "Hay cuatro amigos: Paula, Lez, Clifford y Harry.",
+      "audio": "narr_hay_cuatro_amigos_paula_lez_clifford_y_harry.mp3"
+    },
+    {
+      "role": "intro",
+      "text": "Paula es una chica alta,",
+      "audio": "narr_paula_es_una_chica_alta.mp3"
+    },
+    {
+      "role": "intro",
+      "text": "Lez es un chico rico,",
+      "audio": "narr_lez_es_un_chico_rico.mp3"
+    },
+    {
+      "role": "intro",
+      "text": "Clifford es un perro grande,",
+      "audio": "narr_clifford_es_un_perro_grande.mp3"
+    },
+    {
+      "role": "intro",
+      "text": "y Harry es un elefante pequeño.",
+      "audio": "narr_y_harry_es_un_elefante_pequeno.mp3"
+    },
+    {
+      "role": "closing",
+      "text": "Fin.",
+      "audio": "narr_fin.mp3"
+    }
   ]
 }

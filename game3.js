@@ -40,7 +40,11 @@ let trianglingTuCompleted = new Set();
 let trianglingElEllaCompleted = new Set();
 
 function vocabMastered() {
-  return vocabHeardWords.size >= GAME_DATA.vocabulary.length;
+  // FIXED: "heard once" was never real mastery. Now reuses the same
+  // Leitner engine already proven for Circling -- all 23 words must
+  // reach box 3+ through actual correct recall, matching Plan 1's own
+  // precedent (Learn -> Match Game -> Mastery Test -> Certificate).
+  return vocabQuizItems.length > 0 && vocabQuizItems.every(it => it.currentBox >= 3);
 }
 
 function trianglingMastered() {
@@ -226,16 +230,30 @@ function normalize(s) {
   return s.toLowerCase().replace(/[¡!.,¿?]/g, "").trim();
 }
 
-function playAudio(filename) {
+function extractCoreAnswer(answer) {
+  // Harry's Circling self-answers are formatted "Tú (Harry)" -- extract
+  // just "Harry" so it matches the plain character-name option button.
+  const match = answer.match(/^Tú \((.+)\)$/);
+  return match ? match[1] : answer;
+}
+
+function playAudio(filename, onDone) {
   // Files live in the repo root, not an "audio/" subfolder --
   // matches how the mp3s actually got uploaded to the staging repo.
   const audio = new Audio(filename);
+  // Real completion callback -- fixes the audio-overlap bug where a
+  // fixed setTimeout guessed how long a clip would take, and the next
+  // clip started playing before the real one actually finished.
+  if (onDone) {
+    audio.addEventListener("ended", onDone);
+  }
   audio.play().catch(() => {
     // Silent fail-safe: if a clip isn't recorded yet (staging phase),
     // don't break the UI. Filenames are already final per the
     // recording spreadsheet, so this only fires for not-yet-recorded
     // content, not a broken reference.
     console.warn(`Audio not yet available: ${filename}`);
+    if (onDone) onDone(); // don't let a missing clip stall the sequence
   });
 }
 
@@ -342,20 +360,57 @@ function renderNextCirclingItem() {
 function renderCirclingAnswerInput(item) {
   const el = document.getElementById("circling-answer-input");
   el.innerHTML = "";
-  const btn = document.createElement("button");
-  btn.className = "circling-answer-btn";
-  btn.textContent = item.answer;
-  btn.onclick = () => {
-    flashTap(btn);
-    playAudio(item.answerAudio); // filename already resolved correctly at
-                                  // data-build time (narr_voc_ for bare
-                                  // Sí/No, reusing Vocabulary; m_ otherwise)
-    submitCirclingAnswer(true); // tapping the shown correct-form answer;
-                                  // full free-text/multi-choice entry is a
-                                  // later build step, this proves the
-                                  // Leitner scheduling loop end to end
-  };
-  el.appendChild(btn);
+
+  let options;
+  if (item.type.startsWith("eitheror")) {
+    // The question itself contains both real options: "¿X es A o B?"
+    const match = item.question.match(/¿.*es (.+) o (.+)\?/i) || item.question.match(/¿.*(Soy|Eres) (.+) o (.+)\?/i);
+    if (match) {
+      options = [match[match.length-2], match[match.length-1].replace(/[¿?]/g,'')];
+    } else {
+      options = [item.answer];
+    }
+  } else if (item.type.startsWith("yesno") || item.type.startsWith("no")) {
+    // Genuine binary choice -- Sí vs No, not just the correct one shown alone
+    options = ["Sí", "No"];
+  } else if (item.type === "quien-soy") {
+    // Special case: "¿Quién soy yo?" -- the answer is a NOUN ("un
+    // elefante"), not a character name. Character data has no
+    // "article" field, and there are only 4 fixed nouns in this whole
+    // game, so a small direct lookup is the most reliable approach.
+    const NOUN_ARTICLES = { "chica": "una", "chico": "un", "perro": "un", "elefante": "un" };
+    options = GAME_DATA.characters.map(c => {
+      const noun = c.trait_words[0];
+      return `${NOUN_ARTICLES[noun]} ${noun}`;
+    });
+  } else if (item.type.startsWith("quien")) {
+    options = GAME_DATA.characters.map(c => c.name);
+  } else {
+    options = [item.answer];
+  }
+
+  // Shuffle so the correct answer isn't always in the same position
+  options = [...options].sort(() => Math.random() - 0.5);
+
+  options.forEach(optionText => {
+    const btn = document.createElement("button");
+    btn.className = "circling-answer-btn";
+    btn.textContent = optionText;
+    btn.onclick = () => {
+      flashTap(btn);
+      const isCorrect = normalize(optionText) === normalize(extractCoreAnswer(item.answer));
+      if (isCorrect) {
+        // FIXED: previously played the answer clip then immediately
+        // (synchronously) called submitCirclingAnswer, which itself
+        // immediately played the confirm clip -- same overlap bug.
+        // Now waits for the answer clip to actually finish first.
+        playAudio(item.answerAudio, () => submitCirclingAnswer(isCorrect));
+      } else {
+        submitCirclingAnswer(isCorrect);
+      }
+    };
+    el.appendChild(btn);
+  });
 }
 
 function submitCirclingAnswer(correct) {
@@ -377,12 +432,18 @@ function submitCirclingAnswer(correct) {
     item.dueAtCount = circlingItemCounter + CIRCLING_BOX_GAP[1];
   }
 
-  // Narrator ALWAYS confirms in a full sentence, correct or incorrect
-  playAudio(item.confirmAudio);
+  // Narrator ALWAYS confirms in a full sentence, correct or incorrect.
+  // FIXED: previously used a fixed 1200ms setTimeout guess before
+  // advancing, which was shorter than many real confirm clips --
+  // causing the next question's audio to start while the confirmation
+  // was still playing (the overlapping-voices bug). Now waits for the
+  // actual clip to finish via the real 'ended' event, plus a short
+  // pause so the confirmation doesn't feel abrupt.
   showCirclingConfirm(item.confirm);
-
   updateCirclingGateProgress();
-  setTimeout(renderNextCirclingItem, 1200);
+  playAudio(item.confirmAudio, () => {
+    setTimeout(renderNextCirclingItem, 500);
+  });
 }
 
 function showCirclingConfirm(text) {
@@ -504,44 +565,70 @@ function renderTrianglingQuestion() {
     <div id="triangling-question">${item.question}</div>
     <div id="triangling-word-bank"></div>
     <div id="triangling-built"></div>
+    <div class="actions">
+      <button id="triangling-check-btn" onclick="checkTrianglingAnswer()">Check</button>
+      <button id="triangling-clear-btn" onclick="clearTrianglingAnswer()">Clear</button>
+    </div>
     <div id="triangling-feedback"></div>
   `;
   renderTrianglingWordBank(item);
 }
 
 function renderTrianglingWordBank(item) {
+  // FIXED: previously showed ONLY the exact correct words in isolation
+  // -- no real choice, just the answer pre-assembled. Now reuses the
+  // actual DTS pattern: the full relevant vocabulary bank, so there
+  // are genuine distractors to choose between, same as DTS always had.
   const bankEl = document.getElementById("triangling-word-bank");
   bankEl.innerHTML = "";
-  item.answerWords.forEach(word => {
+  const wordPool = dtsUsableVocabulary().concat(
+    GAME_DATA.vocabulary.filter(v => ["Sí", "No"].includes(v.word))
+  );
+  wordPool.forEach(entry => {
     const btn = document.createElement("button");
     btn.className = "word-tile";
-    btn.textContent = word;
+    btn.textContent = entry.word;
     btn.onclick = () => {
       flashTap(btn);
-      // SILENT on purpose -- no per-word audio in the character's own
-      // voice exists yet. Visual-only until those recordings are made.
-      trianglingSelectedWords.push(word);
+      // Still SILENT on purpose -- no per-word audio in the character's
+      // own voice exists yet, per Curious C's confirmed design.
+      trianglingSelectedWords.push(entry.word);
       document.getElementById("triangling-built").textContent = trianglingSelectedWords.join(" ");
-      if (trianglingSelectedWords.length === item.answerWords.length) {
-        submitTrianglingAnswer(item);
-      }
     };
     bankEl.appendChild(btn);
   });
 }
 
+function clearTrianglingAnswer() {
+  trianglingSelectedWords = [];
+  document.getElementById("triangling-built").textContent = "";
+}
+
+function checkTrianglingAnswer() {
+  const item = trianglingQueue[trianglingIndex];
+  const attempt = trianglingSelectedWords.join(" ").trim();
+  if (normalize(attempt) === normalize(item.answer)) {
+    submitTrianglingAnswer(item);
+  } else {
+    document.getElementById("triangling-feedback").textContent = "Not quite — check the story details";
+    clearTrianglingAnswer();
+  }
+}
+
 function submitTrianglingAnswer(item) {
-  // Full natural phrase, in the character's OWN voice -- real audio.
-  playAudio(item.answerAudio);
-  setTimeout(() => {
-    // Narrator confirms -- real audio.
-    playAudio(item.confirmAudio);
-    document.getElementById("triangling-feedback").textContent = item.confirm;
-    trianglingTuCompleted.add(item.id);
-    checkGateProgression();
-    trianglingIndex += 1;
-    setTimeout(renderTrianglingQuestion, 1500);
-  }, 1200);
+  // FIXED: previously used two stacked fixed setTimeout guesses (1200ms
+  // then 1500ms) instead of waiting for the actual clips to finish --
+  // same overlapping-audio bug as Circling. Now properly sequenced:
+  // answer clip finishes -> confirm clip plays and finishes -> advance.
+  playAudio(item.answerAudio, () => {
+    playAudio(item.confirmAudio, () => {
+      document.getElementById("triangling-feedback").textContent = item.confirm;
+      trianglingTuCompleted.add(item.id);
+      checkGateProgression();
+      trianglingIndex += 1;
+      setTimeout(renderTrianglingQuestion, 500);
+    });
+  });
 }
 
 /* ============================================================
@@ -588,15 +675,186 @@ function renderElEllaQuestion() {
   btn.textContent = item.answer;
   btn.onclick = () => {
     flashTap(btn);
-    playAudio(item.answerAudio); // real Male-voice audio, single tap
-    setTimeout(() => {
-      playAudio(item.confirmAudio); // Narrator confirms
-      document.getElementById("elella-feedback").textContent = item.confirm;
-      trianglingElEllaCompleted.add(item.id);
-      checkGateProgression();
-      elellaIndex += 1;
-      setTimeout(renderElEllaQuestion, 1500);
-    }, 1000);
+    // FIXED: same overlapping-audio bug as Circling/Triangling --
+    // fixed setTimeout guesses replaced with real 'ended' sequencing.
+    playAudio(item.answerAudio, () => {
+      playAudio(item.confirmAudio, () => {
+        document.getElementById("elella-feedback").textContent = item.confirm;
+        trianglingElEllaCompleted.add(item.id);
+        checkGateProgression();
+        elellaIndex += 1;
+        setTimeout(renderElEllaQuestion, 500);
+      });
+    });
   };
   document.getElementById("elella-answer-input").appendChild(btn);
+}
+
+/* ============================================================
+   VOCABULARY MASTERY QUIZ — real test, reusing the exact same
+   Leitner engine already proven for Circling (5 boxes, BOX_GAP =
+   {1:2,2:4,3:6,4:8}), because "heard once" is not mastery. Matches
+   Plan 1's own precedent: Learn -> practice -> real Mastery Test.
+   ============================================================ */
+let vocabQuizItems = [];
+let vocabQuizItemCounter = 0;
+let currentVocabQuizItem = null;
+
+function initVocabQuiz() {
+  vocabQuizItems = GAME_DATA.vocabulary.map(v => ({
+    word: v.word, audio: v.audio, currentBox: 0, status: "new", dueAtCount: null,
+  }));
+  vocabQuizItemCounter = 0;
+  renderNextVocabQuizItem();
+}
+
+function vocabQuizDue() {
+  return vocabQuizItems.filter(it => it.status === "learning" && it.dueAtCount <= vocabQuizItemCounter);
+}
+function vocabQuizNew() {
+  return vocabQuizItems.filter(it => it.status === "new");
+}
+function pickNextVocabQuizItem() {
+  const due = vocabQuizDue();
+  if (due.length) return due[Math.floor(Math.random() * due.length)];
+  const fresh = vocabQuizNew();
+  if (fresh.length) return fresh[Math.floor(Math.random() * fresh.length)];
+  return null;
+}
+
+function renderNextVocabQuizItem() {
+  const container = document.getElementById("vocab-quiz-container");
+  if (!container) return;
+  const item = pickNextVocabQuizItem();
+  currentVocabQuizItem = item;
+
+  if (!item) {
+    container.innerHTML = `<p>All Vocabulary words mastered!</p>`;
+    return;
+  }
+
+  playAudio(item.audio); // hear the word first
+  const distractors = GAME_DATA.vocabulary
+    .map(v => v.word).filter(w => w !== item.word)
+    .sort(() => Math.random() - 0.5).slice(0, 3);
+  const options = [item.word, ...distractors].sort(() => Math.random() - 0.5);
+
+  container.innerHTML = `<div id="vocab-quiz-options"></div><div id="vocab-quiz-feedback"></div>`;
+  const optEl = document.getElementById("vocab-quiz-options");
+  options.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "circling-answer-btn";
+    btn.textContent = word;
+    btn.onclick = () => {
+      flashTap(btn);
+      const correct = word === item.word;
+      submitVocabQuizAnswer(correct);
+    };
+    optEl.appendChild(btn);
+  });
+}
+
+function submitVocabQuizAnswer(correct) {
+  const item = currentVocabQuizItem;
+  vocabQuizItemCounter += 1;
+  if (item.status === "new") item.status = "learning";
+  if (correct) {
+    if (item.currentBox === 5) { item.status = "mastered"; item.dueAtCount = null; }
+    else { item.currentBox += 1; item.dueAtCount = vocabQuizItemCounter + CIRCLING_BOX_GAP[item.currentBox]; }
+  } else {
+    item.currentBox = 1;
+    item.dueAtCount = vocabQuizItemCounter + CIRCLING_BOX_GAP[1];
+  }
+  document.getElementById("vocab-quiz-feedback").textContent = correct ? "¡Correcto!" : `That was "${item.word}"`;
+  checkGateProgression();
+  setTimeout(renderNextVocabQuizItem, 900);
+}
+
+/* ============================================================
+   VOCABULARY MATCH GAME — practice only, does not gate anything
+   (matches Plan 1's own "Match Game = Practice" pattern, separate
+   from its real Mastery Test). Classic memory/concentration: all 23
+   words appear twice, tap two tiles, audio plays, matching pairs
+   stay revealed.
+   ============================================================ */
+let matchGameTiles = [];
+let matchGameFlipped = [];
+let matchGameMatched = new Set();
+
+function startVocabMatchGame() {
+  const words = GAME_DATA.vocabulary.map(v => ({ word: v.word, audio: v.audio }));
+  matchGameTiles = [...words, ...words]
+    .map((w, i) => ({ ...w, id: i }))
+    .sort(() => Math.random() - 0.5);
+  matchGameFlipped = [];
+  matchGameMatched = new Set();
+  renderMatchGame();
+}
+
+function renderMatchGame() {
+  const container = document.getElementById("match-game-container");
+  if (!container) return;
+  container.innerHTML = "";
+  matchGameTiles.forEach(tile => {
+    const btn = document.createElement("button");
+    btn.className = "word-tile";
+    const isFlipped = matchGameFlipped.some(f => f.id === tile.id);
+    const isMatched = matchGameMatched.has(tile.word + tile.id);
+    btn.textContent = (isFlipped || isMatched) ? tile.word : "?";
+    if (isMatched) btn.disabled = true;
+    btn.onclick = () => handleMatchTileClick(tile);
+    container.appendChild(btn);
+  });
+}
+
+function handleMatchTileClick(tile) {
+  if (matchGameFlipped.length >= 2) return;
+  if (matchGameFlipped.some(f => f.id === tile.id)) return;
+  if (matchGameMatched.has(tile.word + tile.id)) return;
+
+  flashTap(document.activeElement);
+  playAudio(tile.audio);
+  matchGameFlipped.push(tile);
+  renderMatchGame();
+
+  if (matchGameFlipped.length === 2) {
+    const [a, b] = matchGameFlipped;
+    if (a.word === b.word) {
+      matchGameMatched.add(a.word + a.id);
+      matchGameMatched.add(b.word + b.id);
+      matchGameFlipped = [];
+      renderMatchGame();
+    } else {
+      setTimeout(() => { matchGameFlipped = []; renderMatchGame(); }, 800);
+    }
+  }
+}
+
+/* ============================================================
+   INTRO STORY — Título / intro lines / Fin. Was recorded and
+   tracked in the audio spreadsheet but never actually built into
+   the app itself (a real gap found, not a regression). Plays each
+   line in sequence, using the same real 'ended'-event sequencing
+   already fixed elsewhere tonight -- no guessed timeouts.
+   ============================================================ */
+let storyIndex = 0;
+
+function playStory() {
+  storyIndex = 0;
+  document.getElementById("story-container").innerHTML = "";
+  playNextStoryLine();
+}
+
+function playNextStoryLine() {
+  if (storyIndex >= GAME_DATA.story.length) return;
+  const line = GAME_DATA.story[storyIndex];
+  const container = document.getElementById("story-container");
+  const p = document.createElement("p");
+  p.textContent = line.text;
+  p.className = "story-line";
+  container.appendChild(p);
+  playAudio(line.audio, () => {
+    storyIndex += 1;
+    setTimeout(playNextStoryLine, 400);
+  });
 }
