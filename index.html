@@ -86,9 +86,13 @@
       };
       triSel.appendChild(btn);
     });
-    setTrianglingLocked(true); // locked by default until Circling is fully mastered -- covers BOTH the tú-block and él/ella sections
-    setCirclingLocked(true);   // locked until Vocabulary is fully heard
-    setDtsLocked(true);        // locked until Triangling is fully complete
+    // PREVIEW MODE: all phases unlocked immediately for full review.
+    // The real gates (Vocabulary -> Circling -> Triangling -> DTS)
+    // still exist in the code below -- just not enforced in this
+    // build, so everything can be seen and tested in one sitting.
+    setTrianglingLocked(false);
+    setCirclingLocked(false);
+    setDtsLocked(false);
   });
 </script>
 </body>

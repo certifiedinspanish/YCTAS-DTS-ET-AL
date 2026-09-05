@@ -204,24 +204,6 @@
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Eres pequeño",
-        "audio": "f_eres_pequeno.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres un elefante",
-        "audio": "f_eres_un_elefante.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres Harry",
-        "audio": "f_eres_harry.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
         "sentence": "Harry, eres un elefante",
         "audio": "f_harry_eres_un_elefante.mp3"
       },
@@ -334,24 +316,6 @@
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Eres pequeño",
-        "audio": "m_eres_pequeno.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres un elefante",
-        "audio": "m_eres_un_elefante.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres Harry",
-        "audio": "m_eres_harry.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
         "sentence": "Harry, eres un elefante",
         "audio": "m_harry_eres_un_elefante.mp3"
       },
@@ -404,24 +368,6 @@
         "about": "Lez",
         "sentence": "Lez es rico",
         "audio": "m_lez_es_rico.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres pequeño",
-        "audio": "m_eres_pequeno.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres un elefante",
-        "audio": "m_eres_un_elefante.mp3"
-      },
-      {
-        "category": "Tú",
-        "about": "Harry",
-        "sentence": "Eres Harry",
-        "audio": "m_eres_harry.mp3"
       },
       {
         "category": "Tú",
