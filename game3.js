@@ -438,10 +438,10 @@ function setTrianglingLocked(locked) {
   if (lockMsg) {
     lockMsg.style.display = locked ? "block" : "none";
   }
-  const elellaLockMsg = document.getElementById("elella-lock-message");
-  if (elellaLockMsg) {
-    elellaLockMsg.style.display = locked ? "block" : "none";
-  }
+  // NOTE: the second lock message (elella-lock-message) is intentionally
+  // left hidden always -- one message covers the whole Triangling
+  // section now that it's unified under a single heading, avoiding a
+  // duplicate "Complete Circling first" showing twice.
 }
 
 /* ============================================================

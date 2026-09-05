@@ -7,6 +7,7 @@
 <style>
   body { font-family: -apple-system, "Segoe UI", sans-serif; background: #FFF8ED; color: #3D2C4E; max-width: 640px; margin: 0 auto; padding: 20px; }
   h1 { font-size: 1.4rem; }
+  h3 { font-size: 1rem; color: #8A7A9B; margin-top: 16px; }
   .char-select button { margin: 4px; padding: 10px 16px; border-radius: 12px; border: 1px solid #ccc; background: white; cursor: pointer; }
   .char-select button.active { background: #4CB8FF; color: white; }
   .char-select button.locked { opacity: 0.4; cursor: not-allowed; }
@@ -29,10 +30,26 @@
 <body>
   <h1>Cuatro Amigos — Staging Preview</h1>
 
-  <h2>Vocabulary</h2>
+  <h2>1. Vocabulary</h2>
   <div id="vocab-list"></div>
 
-  <h2>DTS — Role Play</h2>
+  <h2>2. Circling</h2>
+  <div id="circling-lock-message">🔒 Hear all Vocabulary words first to unlock Circling!</div>
+  <button id="start-circling-btn" onclick="startCircling()">Start Circling</button>
+  <div id="circling-container"></div>
+  <div id="circling-gate-progress"></div>
+
+  <h2>3. Triangling</h2>
+  <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
+
+  <div class="char-select" id="triangling-char-select"></div>
+  <div id="triangling-container"></div>
+
+  <div id="elella-lock-message" style="display:none"></div>
+  <button id="start-elella-btn" onclick="startTrianglingElElla()">Start</button>
+  <div id="elella-container"></div>
+
+  <h2>4. DTS — Role Play</h2>
   <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
   <div class="char-select" id="char-select"></div>
   <div id="word-bank"></div>
@@ -42,22 +59,6 @@
     <button id="clear-btn" onclick="clearSentence()">Clear</button>
   </div>
   <div id="feedback"></div>
-
-  <h2>Triangling — Tú (direct address, preview)</h2>
-  <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
-  <div class="char-select" id="triangling-char-select"></div>
-  <div id="triangling-container"></div>
-
-  <h2>Circling</h2>
-  <div id="circling-lock-message">🔒 Hear all Vocabulary words first to unlock Circling!</div>
-  <button id="start-circling-btn" onclick="startCircling()">Start Circling</button>
-  <div id="circling-container"></div>
-  <div id="circling-gate-progress"></div>
-
-  <h2>Triangling — Él/Ella (who is...?)</h2>
-  <div id="elella-lock-message">🔒 Complete Circling first to unlock this section!</div>
-  <button id="start-elella-btn" onclick="startTrianglingElElla()">Start</button>
-  <div id="elella-container"></div>
 
 <script src="game3.js"></script>
 <script>
@@ -86,10 +87,6 @@
       };
       triSel.appendChild(btn);
     });
-    // PREVIEW MODE: all phases unlocked immediately for full review.
-    // The real gates (Vocabulary -> Circling -> Triangling -> DTS)
-    // still exist in the code below -- just not enforced in this
-    // build, so everything can be seen and tested in one sitting.
     setTrianglingLocked(false);
     setCirclingLocked(false);
     setDtsLocked(false);
