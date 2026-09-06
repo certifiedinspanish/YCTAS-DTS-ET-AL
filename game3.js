@@ -989,3 +989,15 @@ function showMyProgress() {
   lines.push("Start Circling button disabled? " + document.getElementById("start-circling-btn").disabled);
   alert(lines.join("\n"));
 }
+
+/* TEMPORARY — testing shortcut only, same category as showMyProgress().
+   Must be removed before this app is considered finished. */
+function instantMasterVocab() {
+  vocabQuizItems = GAME_DATA.vocabulary
+    .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
+    .map(v => ({ word: v.word, english: v.english, audio: v.audio, currentBox: 3, status: "mastered", dueAtCount: null }));
+  saveProgress();
+  checkGateProgression();
+  alert("Vocabulary instantly marked as mastered. Reloading...");
+  location.reload();
+}
