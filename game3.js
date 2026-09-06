@@ -953,3 +953,20 @@ function playNextStoryLine() {
     setTimeout(playNextStoryLine, 400);
   });
 }
+
+/* Simple on-page diagnostic — no browser console needed. Shows exactly
+   what the lock-gate logic sees, right on the page itself. */
+function showMyProgress() {
+  const lines = [];
+  lines.push("VOCABULARY: " + (vocabMastered() ? "MASTERED ✓" : "not yet mastered"));
+  lines.push("(" + vocabQuizItems.length + " words tracked)");
+  vocabQuizItems.forEach(it => {
+    lines.push("  " + it.word + " — box " + it.currentBox + " — " + it.status);
+  });
+  lines.push("");
+  const cstats = circlingMasteryStats();
+  lines.push("CIRCLING: " + (cstats.allMastered ? "MASTERED ✓" : cstats.atBox3Plus + " / " + cstats.total + " mastered"));
+  lines.push("");
+  lines.push("Start Circling button disabled? " + document.getElementById("start-circling-btn").disabled);
+  alert(lines.join("\n"));
+}
