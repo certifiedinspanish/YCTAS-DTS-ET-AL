@@ -178,6 +178,12 @@
       "key": "como_es",
       "audio": "narr_voc_como_es.mp3",
       "english": "what is ... like"
+    },
+    {
+      "word": "Fin",
+      "key": "fin",
+      "audio": "narr_fin.mp3",
+      "english": "the end"
     }
   ],
   "answerBank": {

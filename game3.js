@@ -57,7 +57,9 @@ function saveProgress() {
   try {
     localStorage.setItem(PROGRESS_KEY, JSON.stringify({
       vocabQuizItems,
+      vocabQuizItemCounter,
       circlingItems,
+      circlingItemCounter,
       trianglingTuCompleted: [...trianglingTuCompleted],
       trianglingElEllaCompleted: [...trianglingElEllaCompleted],
     }));
@@ -70,7 +72,9 @@ function restoreProgress() {
     if (!raw) return false;
     const saved = JSON.parse(raw);
     if (saved.vocabQuizItems) vocabQuizItems = saved.vocabQuizItems;
+    if (typeof saved.vocabQuizItemCounter === "number") vocabQuizItemCounter = saved.vocabQuizItemCounter;
     if (saved.circlingItems) circlingItems = saved.circlingItems;
+    if (typeof saved.circlingItemCounter === "number") circlingItemCounter = saved.circlingItemCounter;
     if (saved.trianglingTuCompleted) trianglingTuCompleted = new Set(saved.trianglingTuCompleted);
     if (saved.trianglingElEllaCompleted) trianglingElEllaCompleted = new Set(saved.trianglingElEllaCompleted);
     return true;
@@ -344,13 +348,16 @@ let circlingItemCounter = 0;
 let currentCirclingItem = null;
 
 function initCircling() {
-  circlingItems = GAME_DATA.circling.map(item => ({
-    ...item,
-    currentBox: 0,
-    status: "new",      // 'new' | 'learning' | 'mastered'
-    dueAtCount: null,
-  }));
-  circlingItemCounter = 0;
+  // FIXED: same bug as initVocabQuiz -- was wiping restored progress every
+  // time "Start Circling" was clicked, instead of resuming it.
+  if (circlingItems.length === 0) {
+    circlingItems = GAME_DATA.circling.map(item => ({
+      ...item,
+      currentBox: 0,
+      status: "new",      // 'new' | 'learning' | 'mastered'
+      dueAtCount: null,
+    }));
+  }
   renderNextCirclingItem();
 }
 
@@ -747,18 +754,21 @@ let currentVocabQuizItem = null;
 const NON_TRANSLATABLE_WORDS = new Set(["Clifford", "Harry", "Lez", "Paula"]);
 
 function initVocabQuiz() {
-  // FIXED: previously dropped the "english" field entirely when building
-  // this internal list (only word/audio were copied), which is why the
-  // correct answer never visibly appeared — its button showed blank/
-  // undefined text instead of the real English word. Also now excludes
-  // the 4 character names, which aren't really "vocabulary" to translate.
-  vocabQuizItems = GAME_DATA.vocabulary
-    .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
-    .map(v => ({
-      word: v.word, english: v.english, audio: v.audio,
-      currentBox: 0, status: "new", dueAtCount: null,
-    }));
-  vocabQuizItemCounter = 0;
+  // FIXED (real bug): this used to unconditionally rebuild vocabQuizItems
+  // from scratch every single time "Start Mastery Test" was clicked --
+  // even if restoreProgress() had just loaded genuine saved progress from
+  // a previous session. Closing the app partway through, coming back, and
+  // clicking Start again to resume would silently wipe everything back to
+  // zero. Now only builds fresh the first time; resumes existing progress
+  // every time after.
+  if (vocabQuizItems.length === 0) {
+    vocabQuizItems = GAME_DATA.vocabulary
+      .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
+      .map(v => ({
+        word: v.word, english: v.english, audio: v.audio,
+        currentBox: 0, status: "new", dueAtCount: null,
+      }));
+  }
   renderNextVocabQuizItem();
 }
 
