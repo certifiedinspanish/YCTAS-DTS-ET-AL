@@ -782,11 +782,24 @@ function renderNextVocabQuizItem() {
   const item = pickNextVocabQuizItem();
   currentVocabQuizItem = item;
 
+  const masteredCount = vocabQuizItems.filter(it => it.status === "mastered").length;
+  const totalCount = vocabQuizItems.length;
+
   if (!item) {
-    container.innerHTML = `<p>All Vocabulary words mastered!</p>`;
+    // FIXED: this used to show "All Vocabulary words mastered!" any time
+    // nothing happened to be due at that exact moment -- even if only a
+    // few words were actually done. Now only claims completion when that
+    // is genuinely true, and otherwise says what's really happening.
+    if (masteredCount >= totalCount) {
+      container.innerHTML = `<p>All Vocabulary words mastered! (${masteredCount} / ${totalCount})</p>`;
+    } else {
+      container.innerHTML = `<p>${masteredCount} / ${totalCount} mastered so far — next word will appear in a moment.</p>`;
+      setTimeout(renderNextVocabQuizItem, 800);
+    }
     return;
   }
 
+  const progressEl = document.getElementById("vocab-quiz-container");
   playAudio(item.audio); // hear the Spanish word — the question
   // Options are ENGLISH (the meaning), not Spanish (the sound). Hearing
   // Spanish and picking Spanish just tests spelling recognition, not
@@ -800,7 +813,7 @@ function renderNextVocabQuizItem() {
     ...distractorEntries.map(v => ({ label: v.english, isCorrect: false })),
   ].sort(() => Math.random() - 0.5);
 
-  container.innerHTML = `<div id="vocab-quiz-options"></div><div id="vocab-quiz-feedback"></div>`;
+  container.innerHTML = `<div id="vocab-quiz-progress" style="font-size:0.85rem;color:#8A7A9B;margin-bottom:8px;">${masteredCount} / ${totalCount} mastered</div><div id="vocab-quiz-options"></div><div id="vocab-quiz-feedback"></div>`;
   const optEl = document.getElementById("vocab-quiz-options");
   options.forEach(opt => {
     const btn = document.createElement("button");
@@ -819,7 +832,13 @@ function submitVocabQuizAnswer(correct) {
   vocabQuizItemCounter += 1;
   if (item.status === "new") item.status = "learning";
   if (correct) {
-    if (item.currentBox === 5) { item.status = "mastered"; item.dueAtCount = null; }
+    // FIXED: this required box 5 (5 separate correct answers, with
+    // growing gaps between chances) before a word ever stopped being
+    // tested -- but the actual Circling gate only ever required box 3.
+    // Words kept rotating long after they'd already satisfied the real
+    // requirement, with zero visible sign of that to the user. Now
+    // retirement matches the real gate threshold.
+    if (item.currentBox >= 3) { item.status = "mastered"; item.dueAtCount = null; item.currentBox = 3; }
     else { item.currentBox += 1; item.dueAtCount = vocabQuizItemCounter + CIRCLING_BOX_GAP[item.currentBox]; }
   } else {
     item.currentBox = 1;
