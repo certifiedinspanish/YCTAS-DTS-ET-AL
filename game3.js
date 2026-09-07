@@ -102,6 +102,8 @@ function setCirclingLocked(locked) {
   if (msg) msg.style.display = locked ? "block" : "none";
 }
 
+let dtsModelPlayed = false;
+
 function setDtsLocked(locked) {
   const buttons = document.querySelectorAll("#char-select button");
   buttons.forEach(btn => {
@@ -110,6 +112,30 @@ function setDtsLocked(locked) {
   });
   const msg = document.getElementById("dts-lock-message");
   if (msg) msg.style.display = locked ? "block" : "none";
+  if (!locked && !dtsModelPlayed) {
+    dtsModelPlayed = true;
+    playDtsModel();
+  }
+}
+
+// Harry modeling his own DTS turn -- plays once automatically the first
+// time DTS unlocks, and can be replayed anytime by tapping Harry's image.
+// NEW RECORDING NEEDED: "m_harry_dts_model.mp3" -- Harry's full modeled
+// speech, e.g. "Soy Harry. Soy un elefante. Soy pequeño. Paula, eres una
+// chica... [etc, his complete DTS turn about himself and everyone else]".
+function playDtsModel() {
+  const label = document.getElementById("dts-now-speaking");
+  const harryImg = document.getElementById("dts-harry-img");
+  if (label) label.textContent = "Now speaking: Harry";
+  if (harryImg) harryImg.style.boxShadow = "0 0 0 3px var(--orange,#FF8A3D)";
+  playAudio("m_harry_dts_model.mp3", () => {
+    if (label) label.textContent = "";
+    if (harryImg) harryImg.style.boxShadow = "none";
+  });
+}
+
+function replayDtsModel() {
+  playDtsModel();
 }
 
 function checkGateProgression() {
@@ -408,8 +434,10 @@ function renderNextCirclingItem() {
 
   playAudio(item.questionAudio); // Narrator asks automatically
   container.innerHTML = `
-    <div id="circling-progress" style="font-size:0.85rem;color:#8A7A9B;margin-bottom:6px;">${stats.atBox3Plus} / ${stats.total} mastered</div>
-    <div id="circling-question">${item.question}</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img src="harry.png" alt="Harry" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+      <div id="circling-question" style="flex:1;">${item.question}</div>
+    </div>
     <div id="circling-answer-input"></div>
     <div id="circling-hint-area"></div>
     <div id="circling-pause-note" style="font-size:0.8rem;color:#8A7A9B;margin-top:14px;">💾 Your progress is saved — stop anytime and pick up right where you left off.</div>
@@ -641,7 +669,11 @@ function renderTrianglingQuestion() {
   playAudio(item.questionAudio); // Narrator auto-asks
 
   container.innerHTML = `
-    <div id="triangling-active-char"><img src="${characterImg(trianglingActiveCharacter)}" alt="${trianglingActiveCharacter}"> Talking to: ${trianglingActiveCharacter}</div>
+    <div id="triangling-active-char">
+      <img src="harry.png" alt="Harry" style="opacity:0.6;">
+      <img src="${characterImg(trianglingActiveCharacter)}" alt="${trianglingActiveCharacter}">
+      Now speaking: ${trianglingActiveCharacter}
+    </div>
     <div id="triangling-question">${item.question}</div>
     <div id="triangling-word-bank"></div>
     <div id="triangling-built"></div>

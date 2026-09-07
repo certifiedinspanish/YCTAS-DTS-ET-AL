@@ -116,6 +116,12 @@
   <h1>🎭 Cuatro Amigos</h1>
 
   <button onclick="playStory()">▶ Play Story</button>
+  <div id="story-characters-row" style="display:flex;justify-content:center;gap:14px;margin:14px 0;">
+    <img src="paula.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="lez.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="clifford.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="harry.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+  </div>
   <div id="story-container"></div>
 
   <h2>1. Vocabulary</h2>
@@ -130,6 +136,7 @@
   <div id="vocab-quiz-container"></div>
 
   <h2>2. Circling</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Harry the elephant is asking the group questions based on the story you heard at the beginning of the app. You can listen to the story again if you wish. Then answer for the group by selecting the correct answers.</p>
   <div id="circling-lock-message">🔒 Complete the Vocabulary Mastery Test — every word answered correctly several times — to unlock Circling.</div>
   <button onclick="showMyProgress()" style="background:#EEE;color:#333;">🔍 Check My Progress</button>
   <button onclick="instantMasterVocab()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Vocabulary</button>
@@ -138,6 +145,7 @@
   <div id="circling-gate-progress"></div>
 
   <h2>3. Triangling</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Here Harry the elephant asks one character at a time questions about the story. Select a character (including Harry), then answer the questions from the perspective of that character.</p>
   <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
 
   <div class="char-select" id="triangling-char-select"></div>
@@ -149,6 +157,11 @@
 
   <h2>4. DTS — Role Play</h2>
   <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Based on the story, the 4 characters will take turns telling as many things as they can about the other characters. They will each be speaking exclusively to Harry the elephant. You the user will play each role by 1. selecting a character, then 2. creating complete sentences from that character's perspective, pressing the word buttons.</p>
+  <div id="dts-speaker-indicator" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <img id="dts-harry-img" src="harry.png" alt="Harry" onclick="replayDtsModel()" style="width:64px;height:64px;border-radius:50%;object-fit:cover;cursor:pointer;">
+    <span id="dts-now-speaking" style="font-weight:700;color:var(--navy,#1B2A4A);"></span>
+  </div>
   <div class="char-select" id="char-select"></div>
   <div id="word-bank"></div>
   <div id="built-sentence"></div>
@@ -170,6 +183,8 @@
         document.querySelectorAll(".char-select button").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         selectCharacter(c.name);
+        const label = document.getElementById("dts-now-speaking");
+        if (label) label.textContent = "Now speaking: " + c.name;
       };
       sel.appendChild(btn);
     });
