@@ -435,7 +435,7 @@ function renderNextCirclingItem() {
   playAudio(item.questionAudio); // Narrator asks automatically
   container.innerHTML = `
     <div style="display:flex;align-items:center;gap:12px;">
-      <img src="harry.png" alt="Harry" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+      <img src="harry.png" alt="Harry" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
       <div id="circling-question" style="flex:1;">${item.question}</div>
     </div>
     <div id="circling-answer-input"></div>
@@ -1074,3 +1074,15 @@ function instantMasterVocab() {
   alert("Vocabulary instantly marked as mastered. Reloading...");
   location.reload();
 }
+
+function instantMasterCircling() {
+  circlingItems = GAME_DATA.circling.map(item => ({
+    ...item, currentBox: 3, status: "mastered", dueAtCount: null,
+  }));
+  saveProgress();
+  checkGateProgression();
+  updateCirclingGateProgress();
+  alert("Circling instantly marked as mastered. Reloading...");
+  location.reload();
+}
+
