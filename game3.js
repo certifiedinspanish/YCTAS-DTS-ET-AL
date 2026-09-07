@@ -381,25 +381,46 @@ function pickNextCirclingItem() {
   return null; // nothing due, nothing new -- fully scheduled ahead
 }
 
+let circlingCorrectStreak = 0;
+
 function renderNextCirclingItem() {
   const item = pickNextCirclingItem();
   currentCirclingItem = item;
   const container = document.getElementById("circling-container");
   if (!container) return;
 
+  const stats = circlingMasteryStats();
+
   if (!item) {
-    container.innerHTML = `<p>All caught up for now — check back soon.</p>`;
+    // FIXED: this used to show a dead-end "All caught up for now" message
+    // any time nothing happened to be due yet -- even if Circling was
+    // nowhere near finished. Now only claims a genuine pause, and clearly
+    // shows real progress either way; if not actually finished, quietly
+    // tries again shortly rather than stopping.
+    if (stats.allMastered) {
+      container.innerHTML = `<p>🎉 All ${stats.total} mastered!</p>`;
+    } else {
+      container.innerHTML = `<p>${stats.atBox3Plus} / ${stats.total} mastered so far — next question in a moment.</p>`;
+      setTimeout(renderNextCirclingItem, 800);
+    }
     return;
   }
 
   playAudio(item.questionAudio); // Narrator asks automatically
   container.innerHTML = `
+    <div id="circling-progress" style="font-size:0.85rem;color:#8A7A9B;margin-bottom:6px;">${stats.atBox3Plus} / ${stats.total} mastered</div>
     <div id="circling-question">${item.question}</div>
     <div id="circling-answer-input"></div>
     <div id="circling-hint-area"></div>
+    <div id="circling-pause-note" style="font-size:0.8rem;color:#8A7A9B;margin-top:14px;">💾 Your progress is saved — stop anytime and pick up right where you left off.</div>
+    <div id="circling-stopping-point" style="display:none;font-size:0.9rem;color:#2FBE73;font-weight:700;margin-top:8px;">✨ Nice work — good stopping point if you'd like a break!</div>
   `;
   renderCirclingAnswerInput(item);
   maybeShowHint();
+  if (circlingCorrectStreak >= 6) {
+    const el = document.getElementById("circling-stopping-point");
+    if (el) el.style.display = "block";
+  }
 }
 
 function renderCirclingAnswerInput(item) {
@@ -465,9 +486,18 @@ function submitCirclingAnswer(correct) {
   if (item.status === "new") item.status = "learning";
 
   if (correct) {
-    if (item.currentBox === 5) {
+    // FIXED: same bug as the Vocabulary Mastery Test had -- retirement
+    // required box 5 (5 separate correct answers, growing gaps between
+    // chances) while the actual Circling->Triangling gate only ever
+    // needed box 3. The last word or two would satisfy the real
+    // requirement but keep being scheduled for further testing, and if
+    // nothing happened to be due at that exact moment, the screen hit a
+    // dead end ("All caught up for now") even though nothing was actually
+    // finished. Retirement now matches the real gate threshold.
+    if (item.currentBox >= 3) {
       item.status = "mastered";
       item.dueAtCount = null;
+      item.currentBox = 3;
     } else {
       item.currentBox += 1;
       item.dueAtCount = circlingItemCounter + CIRCLING_BOX_GAP[item.currentBox];
@@ -476,6 +506,7 @@ function submitCirclingAnswer(correct) {
     item.currentBox = 1;
     item.dueAtCount = circlingItemCounter + CIRCLING_BOX_GAP[1];
   }
+  circlingCorrectStreak = correct ? circlingCorrectStreak + 1 : 0;
   saveProgress();
 
   // Narrator ALWAYS confirms in a full sentence, correct or incorrect.
