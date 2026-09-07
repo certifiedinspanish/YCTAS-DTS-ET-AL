@@ -147,6 +147,11 @@
   <h2>3. Triangling</h2>
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Here Harry the elephant asks one character at a time questions about the story. Select a character then answer the questions from the perspective of that character.</p>
   <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
+  <div id="triangling-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
+    <img src="harry.png" alt="Harry" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
+    <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
+  </div>
+  <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
 
   <div class="char-select" id="triangling-char-select"></div>
   <div id="triangling-container"></div>
@@ -158,10 +163,15 @@
   <h2>4. DTS — Role Play</h2>
   <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Based on the story, the 4 characters will take turns telling as many things as they can about the other characters. They will each be speaking exclusively to Harry the elephant.<br><br>Harry models the role play talking about himself and the other characters from his perspective.<br><br>Then, you the user will play each role (except Harry's) by 1. selecting a character, then 2. creating complete sentences from that character's perspective, pressing the word buttons.</p>
-  <div id="dts-speaker-indicator" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-    <img id="dts-harry-img" src="harry.png" alt="Harry" onclick="replayDtsModel()" style="width:64px;height:64px;border-radius:50%;object-fit:cover;cursor:pointer;">
-    <span id="dts-now-speaking" style="font-weight:700;color:var(--navy,#1B2A4A);"></span>
+  <div id="dts-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
+    <img id="dts-harry-img" src="harry.png" alt="Harry" onclick="replayDtsModel()" style="width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
+    <div>
+      <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
+      <div style="font-size:0.8rem;color:#8A7A9B;">Tap Harry anytime to hear him model the role play again</div>
+    </div>
   </div>
+  <div id="dts-now-speaking" style="font-weight:700;color:var(--navy,#1B2A4A);margin-bottom:8px;"></div>
+  <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
   <div class="char-select" id="char-select"></div>
   <div id="word-bank"></div>
   <div id="built-sentence"></div>
@@ -176,7 +186,7 @@
   loadGameData().then(() => {
     renderVocabulary(document.getElementById("vocab-list"));
     const sel = document.getElementById("char-select");
-    GAME_DATA.characters.forEach(c => {
+    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
       const btn = document.createElement("button");
       btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
       btn.onclick = () => {
