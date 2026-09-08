@@ -643,8 +643,17 @@ let trianglingIndex = 0;
 let trianglingSelectedWords = [];
 
 function selectTrianglingCharacter(name) {
+  // FIXED: questions used to always appear in the exact same fixed
+  // order every time -- like a textbook drill, not a real conversation.
+  // Now shuffled fresh each time a character is selected (including
+  // re-selecting the same character), so it's never predictable and
+  // never gets permanently stuck on one specific question.
   trianglingActiveCharacter = name;
   trianglingQueue = GAME_DATA.triangling.filter(e => e.character === name);
+  for (let i = trianglingQueue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [trianglingQueue[i], trianglingQueue[j]] = [trianglingQueue[j], trianglingQueue[i]];
+  }
   trianglingIndex = 0;
   trianglingSelectedWords = [];
   renderTrianglingQuestion();

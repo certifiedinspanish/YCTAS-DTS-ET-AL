@@ -1199,23 +1199,6 @@
       "confirmAudio": "narr_si_eres_un_perro.mp3"
     },
     {
-      "id": "tri_harry_100",
-      "character": "Paula",
-      "type": "quien-soy-harry",
-      "question": "¿Quién soy yo?",
-      "questionAudio": "narr_pregunta_quien_soy_yo.mp3",
-      "answer": "Harry, eres un elefante.",
-      "answerWords": [
-        "Harry",
-        "eres",
-        "un",
-        "elefante"
-      ],
-      "answerAudio": "f_harry_eres_un_elefante.mp3",
-      "confirm": "Sí, soy un elefante.",
-      "confirmAudio": "narr_si_soy_un_elefante.mp3"
-    },
-    {
       "id": "tri_harry_101",
       "character": "Paula",
       "type": "yesno-noun-harry",
@@ -1315,23 +1298,6 @@
       "confirmAudio": "narr_si_soy_pequeno.mp3"
     },
     {
-      "id": "tri_harry_107",
-      "character": "Lez",
-      "type": "quien-soy-harry",
-      "question": "¿Quién soy yo?",
-      "questionAudio": "narr_pregunta_quien_soy_yo.mp3",
-      "answer": "Harry, eres un elefante.",
-      "answerWords": [
-        "Harry",
-        "eres",
-        "un",
-        "elefante"
-      ],
-      "answerAudio": "m_harry_eres_un_elefante.mp3",
-      "confirm": "Sí, soy un elefante.",
-      "confirmAudio": "narr_si_soy_un_elefante.mp3"
-    },
-    {
       "id": "tri_harry_108",
       "character": "Lez",
       "type": "yesno-noun-harry",
@@ -1429,23 +1395,6 @@
       "answerAudio": "m_harry_eres_pequeno.mp3",
       "confirm": "Sí, soy pequeño.",
       "confirmAudio": "narr_si_soy_pequeno.mp3"
-    },
-    {
-      "id": "tri_harry_114",
-      "character": "Clifford",
-      "type": "quien-soy-harry",
-      "question": "¿Quién soy yo?",
-      "questionAudio": "narr_pregunta_quien_soy_yo.mp3",
-      "answer": "Harry, eres un elefante.",
-      "answerWords": [
-        "Harry",
-        "eres",
-        "un",
-        "elefante"
-      ],
-      "answerAudio": "m_harry_eres_un_elefante.mp3",
-      "confirm": "Sí, soy un elefante.",
-      "confirmAudio": "narr_si_soy_un_elefante.mp3"
     },
     {
       "id": "tri_harry_115",
