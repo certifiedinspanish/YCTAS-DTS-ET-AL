@@ -686,9 +686,11 @@ function renderTrianglingQuestion() {
     <div id="triangling-question">${item.question}</div>
     <div id="triangling-word-bank"></div>
     <div id="triangling-built"></div>
+    <p style="font-size:0.8rem;color:#8A7A9B;margin:6px 0;">Tap words below to build your answer. Made a mistake? Tap <b>Clear</b> to start over. Can't figure it out? Tap <b>Skip</b> to move on — no penalty.</p>
     <div class="actions">
       <button id="triangling-check-btn" onclick="checkTrianglingAnswer()">Check</button>
       <button id="triangling-clear-btn" onclick="clearTrianglingAnswer()">Clear</button>
+      <button id="triangling-skip-btn" onclick="skipTrianglingQuestion()" style="background:#EEE;color:#333;">Skip</button>
     </div>
     <div id="triangling-feedback"></div>
   `;
@@ -725,15 +727,35 @@ function clearTrianglingAnswer() {
   document.getElementById("triangling-built").textContent = "";
 }
 
+function stripLeadingSiNo(s) {
+  return s.replace(/^(si|no)\s+/, "");
+}
+
 function checkTrianglingAnswer() {
   const item = trianglingQueue[trianglingIndex];
   const attempt = trianglingSelectedWords.join(" ").trim();
-  if (normalize(attempt) === normalize(item.answer)) {
+  // FIXED: some correct answers were only ever recorded as the bare fact
+  // (no "Sí,"/"No." prefix), even though every other question in this
+  // exercise DOES use that prefix. A user reasonably including "Sí" or
+  // "No" -- matching the pattern they've already learned -- was being
+  // rejected purely because of this recording gap, not because they
+  // were actually wrong. Now tolerant of an optional leading Sí/No on
+  // either side, so both phrasings work and still play the same correct
+  // audio either way.
+  const a = stripLeadingSiNo(normalize(attempt));
+  const b = stripLeadingSiNo(normalize(item.answer));
+  if (a === b) {
     submitTrianglingAnswer(item);
   } else {
-    document.getElementById("triangling-feedback").textContent = "Not quite — check the story details";
+    document.getElementById("triangling-feedback").innerHTML =
+      "Not quite — check the story details.<br><small>Tap the words below again, or tap <b>Clear</b> to start this answer over. Stuck? Tap <b>Skip</b> to move to the next question.</small>";
     clearTrianglingAnswer();
   }
+}
+
+function skipTrianglingQuestion() {
+  trianglingIndex += 1;
+  renderTrianglingQuestion();
 }
 
 function submitTrianglingAnswer(item) {
