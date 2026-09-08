@@ -1197,6 +1197,948 @@
       "answerAudio": "m_si_soy_un_perro.mp3",
       "confirm": "Sí, eres un perro.",
       "confirmAudio": "narr_si_eres_un_perro.mp3"
+    },
+    {
+      "id": "tri_harry_100",
+      "character": "Paula",
+      "type": "quien-soy-harry",
+      "question": "¿Quién soy yo?",
+      "questionAudio": "narr_pregunta_quien_soy_yo.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "f_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_101",
+      "character": "Paula",
+      "type": "yesno-noun-harry",
+      "question": "¿Soy un elefante?",
+      "questionAudio": "narr_pregunta_soy_un_elefante.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "f_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_102",
+      "character": "Paula",
+      "type": "no-noun-harry",
+      "question": "¿Soy una chica?",
+      "questionAudio": "narr_pregunta_soy_una_chica.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "f_harry_eres_un_elefante.mp3",
+      "confirm": "No, soy un elefante.",
+      "confirmAudio": "narr_no_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_103",
+      "character": "Paula",
+      "type": "eitheror-noun-harry",
+      "question": "¿Soy un elefante o una chica?",
+      "questionAudio": "narr_pregunta_soy_un_elefante_o_una_chica.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "f_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_104",
+      "character": "Paula",
+      "type": "yesno-trait-harry",
+      "question": "¿Soy pequeño?",
+      "questionAudio": "narr_pregunta_soy_pequeno.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "f_harry_eres_pequeno.mp3",
+      "confirm": "Sí, soy pequeño.",
+      "confirmAudio": "narr_si_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_105",
+      "character": "Paula",
+      "type": "no-trait-harry",
+      "question": "¿Soy alta?",
+      "questionAudio": "narr_pregunta_soy_alta.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "f_harry_eres_pequeno.mp3",
+      "confirm": "No, soy pequeño.",
+      "confirmAudio": "narr_no_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_106",
+      "character": "Paula",
+      "type": "eitheror-trait-harry",
+      "question": "¿Soy pequeño o alta?",
+      "questionAudio": "narr_pregunta_soy_pequeno_o_alta.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "f_harry_eres_pequeno.mp3",
+      "confirm": "Sí, soy pequeño.",
+      "confirmAudio": "narr_si_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_107",
+      "character": "Lez",
+      "type": "quien-soy-harry",
+      "question": "¿Quién soy yo?",
+      "questionAudio": "narr_pregunta_quien_soy_yo.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_108",
+      "character": "Lez",
+      "type": "yesno-noun-harry",
+      "question": "¿Soy un elefante?",
+      "questionAudio": "narr_pregunta_soy_un_elefante.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_109",
+      "character": "Lez",
+      "type": "no-noun-harry",
+      "question": "¿Soy una chica?",
+      "questionAudio": "narr_pregunta_soy_una_chica.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "No, soy un elefante.",
+      "confirmAudio": "narr_no_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_110",
+      "character": "Lez",
+      "type": "eitheror-noun-harry",
+      "question": "¿Soy un elefante o una chica?",
+      "questionAudio": "narr_pregunta_soy_un_elefante_o_una_chica.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_111",
+      "character": "Lez",
+      "type": "yesno-trait-harry",
+      "question": "¿Soy pequeño?",
+      "questionAudio": "narr_pregunta_soy_pequeno.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "m_harry_eres_pequeno.mp3",
+      "confirm": "Sí, soy pequeño.",
+      "confirmAudio": "narr_si_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_112",
+      "character": "Lez",
+      "type": "no-trait-harry",
+      "question": "¿Soy alta?",
+      "questionAudio": "narr_pregunta_soy_alta.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "m_harry_eres_pequeno.mp3",
+      "confirm": "No, soy pequeño.",
+      "confirmAudio": "narr_no_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_113",
+      "character": "Lez",
+      "type": "eitheror-trait-harry",
+      "question": "¿Soy pequeño o alta?",
+      "questionAudio": "narr_pregunta_soy_pequeno_o_alta.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "m_harry_eres_pequeno.mp3",
+      "confirm": "Sí, soy pequeño.",
+      "confirmAudio": "narr_si_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_114",
+      "character": "Clifford",
+      "type": "quien-soy-harry",
+      "question": "¿Quién soy yo?",
+      "questionAudio": "narr_pregunta_quien_soy_yo.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_115",
+      "character": "Clifford",
+      "type": "yesno-noun-harry",
+      "question": "¿Soy un elefante?",
+      "questionAudio": "narr_pregunta_soy_un_elefante.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_116",
+      "character": "Clifford",
+      "type": "no-noun-harry",
+      "question": "¿Soy una chica?",
+      "questionAudio": "narr_pregunta_soy_una_chica.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "No, soy un elefante.",
+      "confirmAudio": "narr_no_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_117",
+      "character": "Clifford",
+      "type": "eitheror-noun-harry",
+      "question": "¿Soy un elefante o una chica?",
+      "questionAudio": "narr_pregunta_soy_un_elefante_o_una_chica.mp3",
+      "answer": "Harry, eres un elefante.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "un",
+        "elefante"
+      ],
+      "answerAudio": "m_harry_eres_un_elefante.mp3",
+      "confirm": "Sí, soy un elefante.",
+      "confirmAudio": "narr_si_soy_un_elefante.mp3"
+    },
+    {
+      "id": "tri_harry_118",
+      "character": "Clifford",
+      "type": "yesno-trait-harry",
+      "question": "¿Soy pequeño?",
+      "questionAudio": "narr_pregunta_soy_pequeno.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "m_harry_eres_pequeno.mp3",
+      "confirm": "Sí, soy pequeño.",
+      "confirmAudio": "narr_si_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_119",
+      "character": "Clifford",
+      "type": "no-trait-harry",
+      "question": "¿Soy alta?",
+      "questionAudio": "narr_pregunta_soy_alta.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "m_harry_eres_pequeno.mp3",
+      "confirm": "No, soy pequeño.",
+      "confirmAudio": "narr_no_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_harry_120",
+      "character": "Clifford",
+      "type": "eitheror-trait-harry",
+      "question": "¿Soy pequeño o alta?",
+      "questionAudio": "narr_pregunta_soy_pequeno_o_alta.mp3",
+      "answer": "Harry, eres pequeño.",
+      "answerWords": [
+        "Harry",
+        "eres",
+        "pequeño"
+      ],
+      "answerAudio": "m_harry_eres_pequeno.mp3",
+      "confirm": "Sí, soy pequeño.",
+      "confirmAudio": "narr_si_soy_pequeno.mp3"
+    },
+    {
+      "id": "tri_elella_200",
+      "character": "Paula",
+      "type": "yesno-noun-about-lez",
+      "question": "¿Lez es un chico?",
+      "questionAudio": "narr_pregunta_lez_es_un_chico.mp3",
+      "answer": "Lez es un chico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "un",
+        "chico"
+      ],
+      "answerAudio": "f_lez_es_un_chico.mp3",
+      "confirm": "Sí, Lez es un chico.",
+      "confirmAudio": "narr_si_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_201",
+      "character": "Paula",
+      "type": "eitheror-noun-about-lez",
+      "question": "¿Lez es un chico o una chica?",
+      "questionAudio": "narr_pregunta_lez_es_un_chico_o_una_chica.mp3",
+      "answer": "Lez es un chico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "un",
+        "chico"
+      ],
+      "answerAudio": "f_lez_es_un_chico.mp3",
+      "confirm": "Sí, Lez es un chico.",
+      "confirmAudio": "narr_si_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_202",
+      "character": "Paula",
+      "type": "no-noun-about-lez",
+      "question": "¿Lez es una chica?",
+      "questionAudio": "narr_pregunta_lez_es_una_chica.mp3",
+      "answer": "Lez es un chico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "un",
+        "chico"
+      ],
+      "answerAudio": "f_lez_es_un_chico.mp3",
+      "confirm": "No. Lez es un chico.",
+      "confirmAudio": "narr_no_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_203",
+      "character": "Paula",
+      "type": "yesno-trait-about-lez",
+      "question": "¿Lez es rico?",
+      "questionAudio": "narr_pregunta_lez_es_rico.mp3",
+      "answer": "Lez es rico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "rico"
+      ],
+      "answerAudio": "f_lez_es_rico.mp3",
+      "confirm": "Sí, Lez es rico.",
+      "confirmAudio": "narr_si_lez_es_rico.mp3"
+    },
+    {
+      "id": "tri_elella_204",
+      "character": "Paula",
+      "type": "eitheror-trait-about-lez",
+      "question": "¿Lez es rico o alta?",
+      "questionAudio": "narr_pregunta_lez_es_rico_o_alta.mp3",
+      "answer": "Lez es rico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "rico"
+      ],
+      "answerAudio": "f_lez_es_rico.mp3",
+      "confirm": "Sí, Lez es rico.",
+      "confirmAudio": "narr_si_lez_es_rico.mp3"
+    },
+    {
+      "id": "tri_elella_205",
+      "character": "Paula",
+      "type": "no-trait-about-lez",
+      "question": "¿Lez es alta?",
+      "questionAudio": "narr_pregunta_lez_es_alta.mp3",
+      "answer": "Lez es rico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "rico"
+      ],
+      "answerAudio": "f_lez_es_rico.mp3",
+      "confirm": "No. Lez es rico.",
+      "confirmAudio": "narr_no_lez_es_rico.mp3"
+    },
+    {
+      "id": "tri_elella_206",
+      "character": "Paula",
+      "type": "yesno-noun-about-clifford",
+      "question": "¿Clifford es un perro?",
+      "questionAudio": "narr_pregunta_clifford_es_un_perro.mp3",
+      "answer": "Clifford es un perro.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "un",
+        "perro"
+      ],
+      "answerAudio": "f_clifford_es_un_perro.mp3",
+      "confirm": "Sí, Clifford es un perro.",
+      "confirmAudio": "narr_si_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_207",
+      "character": "Paula",
+      "type": "eitheror-noun-about-clifford",
+      "question": "¿Clifford es un perro o una chica?",
+      "questionAudio": "narr_pregunta_clifford_es_un_perro_o_una_chica.mp3",
+      "answer": "Clifford es un perro.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "un",
+        "perro"
+      ],
+      "answerAudio": "f_clifford_es_un_perro.mp3",
+      "confirm": "Sí, Clifford es un perro.",
+      "confirmAudio": "narr_si_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_208",
+      "character": "Paula",
+      "type": "no-noun-about-clifford",
+      "question": "¿Clifford es una chica?",
+      "questionAudio": "narr_pregunta_clifford_es_una_chica.mp3",
+      "answer": "Clifford es un perro.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "un",
+        "perro"
+      ],
+      "answerAudio": "f_clifford_es_un_perro.mp3",
+      "confirm": "No. Clifford es un perro.",
+      "confirmAudio": "narr_no_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_209",
+      "character": "Paula",
+      "type": "yesno-trait-about-clifford",
+      "question": "¿Clifford es grande?",
+      "questionAudio": "narr_pregunta_clifford_es_grande.mp3",
+      "answer": "Clifford es grande.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "grande"
+      ],
+      "answerAudio": "f_clifford_es_grande.mp3",
+      "confirm": "Sí, Clifford es grande.",
+      "confirmAudio": "narr_si_clifford_es_grande.mp3"
+    },
+    {
+      "id": "tri_elella_210",
+      "character": "Paula",
+      "type": "eitheror-trait-about-clifford",
+      "question": "¿Clifford es grande o alta?",
+      "questionAudio": "narr_pregunta_clifford_es_grande_o_alta.mp3",
+      "answer": "Clifford es grande.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "grande"
+      ],
+      "answerAudio": "f_clifford_es_grande.mp3",
+      "confirm": "Sí, Clifford es grande.",
+      "confirmAudio": "narr_si_clifford_es_grande.mp3"
+    },
+    {
+      "id": "tri_elella_211",
+      "character": "Paula",
+      "type": "no-trait-about-clifford",
+      "question": "¿Clifford es alta?",
+      "questionAudio": "narr_pregunta_clifford_es_alta.mp3",
+      "answer": "Clifford es grande.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "grande"
+      ],
+      "answerAudio": "f_clifford_es_grande.mp3",
+      "confirm": "No. Clifford es grande.",
+      "confirmAudio": "narr_no_clifford_es_grande.mp3"
+    },
+    {
+      "id": "tri_elella_212",
+      "character": "Lez",
+      "type": "yesno-noun-about-paula",
+      "question": "¿Paula es una chica?",
+      "questionAudio": "narr_pregunta_paula_es_una_chica.mp3",
+      "answer": "Paula es una chica.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "una",
+        "chica"
+      ],
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "Sí, Paula es una chica.",
+      "confirmAudio": "narr_si_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_213",
+      "character": "Lez",
+      "type": "eitheror-noun-about-paula",
+      "question": "¿Paula es una chica o un chico?",
+      "questionAudio": "narr_pregunta_paula_es_una_chica_o_un_chico.mp3",
+      "answer": "Paula es una chica.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "una",
+        "chica"
+      ],
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "Sí, Paula es una chica.",
+      "confirmAudio": "narr_si_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_214",
+      "character": "Lez",
+      "type": "no-noun-about-paula",
+      "question": "¿Paula es un chico?",
+      "questionAudio": "narr_pregunta_paula_es_un_chico.mp3",
+      "answer": "Paula es una chica.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "una",
+        "chica"
+      ],
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "No. Paula es una chica.",
+      "confirmAudio": "narr_no_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_215",
+      "character": "Lez",
+      "type": "yesno-trait-about-paula",
+      "question": "¿Paula es alta?",
+      "questionAudio": "narr_pregunta_paula_es_alta.mp3",
+      "answer": "Paula es alta.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "alta"
+      ],
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "Sí, Paula es alta.",
+      "confirmAudio": "narr_si_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_216",
+      "character": "Lez",
+      "type": "eitheror-trait-about-paula",
+      "question": "¿Paula es alta o rico?",
+      "questionAudio": "narr_pregunta_paula_es_alta_o_rico.mp3",
+      "answer": "Paula es alta.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "alta"
+      ],
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "Sí, Paula es alta.",
+      "confirmAudio": "narr_si_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_217",
+      "character": "Lez",
+      "type": "no-trait-about-paula",
+      "question": "¿Paula es rico?",
+      "questionAudio": "narr_pregunta_paula_es_rico.mp3",
+      "answer": "Paula es alta.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "alta"
+      ],
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "No. Paula es alta.",
+      "confirmAudio": "narr_no_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_218",
+      "character": "Lez",
+      "type": "yesno-noun-about-clifford",
+      "question": "¿Clifford es un perro?",
+      "questionAudio": "narr_pregunta_clifford_es_un_perro.mp3",
+      "answer": "Clifford es un perro.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "un",
+        "perro"
+      ],
+      "answerAudio": "m_clifford_es_un_perro.mp3",
+      "confirm": "Sí, Clifford es un perro.",
+      "confirmAudio": "narr_si_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_219",
+      "character": "Lez",
+      "type": "eitheror-noun-about-clifford",
+      "question": "¿Clifford es un perro o una chica?",
+      "questionAudio": "narr_pregunta_clifford_es_un_perro_o_una_chica.mp3",
+      "answer": "Clifford es un perro.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "un",
+        "perro"
+      ],
+      "answerAudio": "m_clifford_es_un_perro.mp3",
+      "confirm": "Sí, Clifford es un perro.",
+      "confirmAudio": "narr_si_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_220",
+      "character": "Lez",
+      "type": "no-noun-about-clifford",
+      "question": "¿Clifford es una chica?",
+      "questionAudio": "narr_pregunta_clifford_es_una_chica.mp3",
+      "answer": "Clifford es un perro.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "un",
+        "perro"
+      ],
+      "answerAudio": "m_clifford_es_un_perro.mp3",
+      "confirm": "No. Clifford es un perro.",
+      "confirmAudio": "narr_no_clifford_es_un_perro.mp3"
+    },
+    {
+      "id": "tri_elella_221",
+      "character": "Lez",
+      "type": "yesno-trait-about-clifford",
+      "question": "¿Clifford es grande?",
+      "questionAudio": "narr_pregunta_clifford_es_grande.mp3",
+      "answer": "Clifford es grande.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "grande"
+      ],
+      "answerAudio": "m_clifford_es_grande.mp3",
+      "confirm": "Sí, Clifford es grande.",
+      "confirmAudio": "narr_si_clifford_es_grande.mp3"
+    },
+    {
+      "id": "tri_elella_222",
+      "character": "Lez",
+      "type": "eitheror-trait-about-clifford",
+      "question": "¿Clifford es grande o alta?",
+      "questionAudio": "narr_pregunta_clifford_es_grande_o_alta.mp3",
+      "answer": "Clifford es grande.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "grande"
+      ],
+      "answerAudio": "m_clifford_es_grande.mp3",
+      "confirm": "Sí, Clifford es grande.",
+      "confirmAudio": "narr_si_clifford_es_grande.mp3"
+    },
+    {
+      "id": "tri_elella_223",
+      "character": "Lez",
+      "type": "no-trait-about-clifford",
+      "question": "¿Clifford es alta?",
+      "questionAudio": "narr_pregunta_clifford_es_alta.mp3",
+      "answer": "Clifford es grande.",
+      "answerWords": [
+        "Clifford",
+        "es",
+        "grande"
+      ],
+      "answerAudio": "m_clifford_es_grande.mp3",
+      "confirm": "No. Clifford es grande.",
+      "confirmAudio": "narr_no_clifford_es_grande.mp3"
+    },
+    {
+      "id": "tri_elella_224",
+      "character": "Clifford",
+      "type": "yesno-noun-about-paula",
+      "question": "¿Paula es una chica?",
+      "questionAudio": "narr_pregunta_paula_es_una_chica.mp3",
+      "answer": "Paula es una chica.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "una",
+        "chica"
+      ],
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "Sí, Paula es una chica.",
+      "confirmAudio": "narr_si_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_225",
+      "character": "Clifford",
+      "type": "eitheror-noun-about-paula",
+      "question": "¿Paula es una chica o un chico?",
+      "questionAudio": "narr_pregunta_paula_es_una_chica_o_un_chico.mp3",
+      "answer": "Paula es una chica.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "una",
+        "chica"
+      ],
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "Sí, Paula es una chica.",
+      "confirmAudio": "narr_si_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_226",
+      "character": "Clifford",
+      "type": "no-noun-about-paula",
+      "question": "¿Paula es un chico?",
+      "questionAudio": "narr_pregunta_paula_es_un_chico.mp3",
+      "answer": "Paula es una chica.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "una",
+        "chica"
+      ],
+      "answerAudio": "m_paula_es_una_chica.mp3",
+      "confirm": "No. Paula es una chica.",
+      "confirmAudio": "narr_no_paula_es_una_chica.mp3"
+    },
+    {
+      "id": "tri_elella_227",
+      "character": "Clifford",
+      "type": "yesno-trait-about-paula",
+      "question": "¿Paula es alta?",
+      "questionAudio": "narr_pregunta_paula_es_alta.mp3",
+      "answer": "Paula es alta.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "alta"
+      ],
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "Sí, Paula es alta.",
+      "confirmAudio": "narr_si_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_228",
+      "character": "Clifford",
+      "type": "eitheror-trait-about-paula",
+      "question": "¿Paula es alta o rico?",
+      "questionAudio": "narr_pregunta_paula_es_alta_o_rico.mp3",
+      "answer": "Paula es alta.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "alta"
+      ],
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "Sí, Paula es alta.",
+      "confirmAudio": "narr_si_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_229",
+      "character": "Clifford",
+      "type": "no-trait-about-paula",
+      "question": "¿Paula es rico?",
+      "questionAudio": "narr_pregunta_paula_es_rico.mp3",
+      "answer": "Paula es alta.",
+      "answerWords": [
+        "Paula",
+        "es",
+        "alta"
+      ],
+      "answerAudio": "m_paula_es_alta.mp3",
+      "confirm": "No. Paula es alta.",
+      "confirmAudio": "narr_no_paula_es_alta.mp3"
+    },
+    {
+      "id": "tri_elella_230",
+      "character": "Clifford",
+      "type": "yesno-noun-about-lez",
+      "question": "¿Lez es un chico?",
+      "questionAudio": "narr_pregunta_lez_es_un_chico.mp3",
+      "answer": "Lez es un chico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "un",
+        "chico"
+      ],
+      "answerAudio": "m_lez_es_un_chico.mp3",
+      "confirm": "Sí, Lez es un chico.",
+      "confirmAudio": "narr_si_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_231",
+      "character": "Clifford",
+      "type": "eitheror-noun-about-lez",
+      "question": "¿Lez es un chico o una chica?",
+      "questionAudio": "narr_pregunta_lez_es_un_chico_o_una_chica.mp3",
+      "answer": "Lez es un chico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "un",
+        "chico"
+      ],
+      "answerAudio": "m_lez_es_un_chico.mp3",
+      "confirm": "Sí, Lez es un chico.",
+      "confirmAudio": "narr_si_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_232",
+      "character": "Clifford",
+      "type": "no-noun-about-lez",
+      "question": "¿Lez es una chica?",
+      "questionAudio": "narr_pregunta_lez_es_una_chica.mp3",
+      "answer": "Lez es un chico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "un",
+        "chico"
+      ],
+      "answerAudio": "m_lez_es_un_chico.mp3",
+      "confirm": "No. Lez es un chico.",
+      "confirmAudio": "narr_no_lez_es_un_chico.mp3"
+    },
+    {
+      "id": "tri_elella_233",
+      "character": "Clifford",
+      "type": "yesno-trait-about-lez",
+      "question": "¿Lez es rico?",
+      "questionAudio": "narr_pregunta_lez_es_rico.mp3",
+      "answer": "Lez es rico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "rico"
+      ],
+      "answerAudio": "m_lez_es_rico.mp3",
+      "confirm": "Sí, Lez es rico.",
+      "confirmAudio": "narr_si_lez_es_rico.mp3"
+    },
+    {
+      "id": "tri_elella_234",
+      "character": "Clifford",
+      "type": "eitheror-trait-about-lez",
+      "question": "¿Lez es rico o alta?",
+      "questionAudio": "narr_pregunta_lez_es_rico_o_alta.mp3",
+      "answer": "Lez es rico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "rico"
+      ],
+      "answerAudio": "m_lez_es_rico.mp3",
+      "confirm": "Sí, Lez es rico.",
+      "confirmAudio": "narr_si_lez_es_rico.mp3"
+    },
+    {
+      "id": "tri_elella_235",
+      "character": "Clifford",
+      "type": "no-trait-about-lez",
+      "question": "¿Lez es alta?",
+      "questionAudio": "narr_pregunta_lez_es_alta.mp3",
+      "answer": "Lez es rico.",
+      "answerWords": [
+        "Lez",
+        "es",
+        "rico"
+      ],
+      "answerAudio": "m_lez_es_rico.mp3",
+      "confirm": "No. Lez es rico.",
+      "confirmAudio": "narr_no_lez_es_rico.mp3"
     }
   ],
   "trianglingElElla": [
