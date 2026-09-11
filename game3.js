@@ -1071,3 +1071,11 @@ function instantMasterCircling() {
   location.reload();
 }
 
+function instantMasterTriangling() {
+  GAME_DATA.triangling.forEach(item => trianglingTuCompleted.add(item.id));
+  saveProgress();
+  checkGateProgression();
+  alert("Triangling instantly marked as mastered. Reloading...");
+  location.reload();
+}
+
