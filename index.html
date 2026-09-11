@@ -27,7 +27,7 @@
   h3 { font-size: 0.95rem; color: var(--text-muted); margin: 18px 0 8px; font-weight: 700; }
 
   section, #story-container, #vocab-list, #match-game-container, #vocab-quiz-container,
-  #circling-container, #triangling-container, #elella-container {
+  #circling-container, #triangling-container {
     background: var(--panel); border-radius: 16px; padding: 4px;
   }
 
@@ -43,7 +43,7 @@
   button:active { transform: scale(0.97); }
 
   /* Top-level "start this activity" buttons */
-  body > button, h3 + button, #start-elella-btn, #start-circling-btn {
+  body > button, h3 + button, #start-circling-btn {
     display: block; width: 100%; padding: 14px; margin: 10px 0; border: none;
     border-radius: 14px; background: var(--orange); color: #fff; font-weight: 800;
     font-size: 1rem; box-shadow: 0 2px 6px rgba(255,138,61,0.3);
@@ -57,11 +57,11 @@
   .char-select button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
   .char-select button.locked { opacity: 0.35; cursor: not-allowed; }
 
-  #triangling-lock-message, #elella-lock-message, #circling-lock-message, #dts-lock-message {
+  #triangling-lock-message, #circling-lock-message, #dts-lock-message {
     color: var(--coral); font-weight: 700; background: #FDEAEA; border-radius: 10px;
     padding: 10px 14px; margin-bottom: 10px; text-align: center; font-size: 0.9rem;
   }
-  #start-elella-btn:disabled, #check-btn:disabled, #start-circling-btn:disabled {
+  #check-btn:disabled, #start-circling-btn:disabled {
     opacity: 0.35; cursor: not-allowed; box-shadow: none;
   }
 
@@ -157,9 +157,6 @@
   <div class="char-select" id="triangling-char-select"></div>
   <div id="triangling-container"></div>
 
-  <div id="elella-lock-message" style="display:none"></div>
-  <button id="start-elella-btn" onclick="startTrianglingElElla()">Start</button>
-  <div id="elella-container"></div>
 
   <h2>4. DTS — Role Play</h2>
   <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
@@ -222,29 +219,5 @@
     updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
   });
 </script>
-  <script>
-(async function() {
-  const res = await fetch('status.json?_=' + Date.now());
-  const status = await res.json();
-
-  const expired = status.expires && new Date() > new Date(status.expires);
-
-  if (!status.active || expired) {
-    document.body.innerHTML = `<div style="text-align:center;padding:60px;font-family:sans-serif;">
-      <p>${status.offlineMessage}</p></div>`;
-    return;
-  }
-
-  const unlocked = sessionStorage.getItem('appUnlocked');
-  if (unlocked !== 'true') {
-    const code = prompt('Enter passcode:');
-    if (code !== status.passcode) {
-      document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
-      return;
-    }
-    sessionStorage.setItem('appUnlocked', 'true');
-  }
-})();
-  </script>
 </body>
 </html>

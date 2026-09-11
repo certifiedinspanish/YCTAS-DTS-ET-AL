@@ -37,12 +37,11 @@ async function loadGameData() {
    ============================================================ */
 let vocabHeardWords = new Set();
 let trianglingTuCompleted = new Set();
-let trianglingElEllaCompleted = new Set();
 
 /* ============================================================
    PROGRESS PERSISTENCE — REAL BUG FOUND AND FIXED.
-   Previously, vocabQuizItems / circlingItems / trianglingTuCompleted /
-   trianglingElEllaCompleted were plain in-memory variables with zero
+   Previously, vocabQuizItems / circlingItems / trianglingTuCompleted
+   were plain in-memory variables with zero
    localStorage anywhere in this file. Any page reload or navigation
    away and back wiped all mastery progress, so a gate that had genuinely
    just been earned would report itself locked again on the very next
@@ -61,7 +60,6 @@ function saveProgress() {
       circlingItems,
       circlingItemCounter,
       trianglingTuCompleted: [...trianglingTuCompleted],
-      trianglingElEllaCompleted: [...trianglingElEllaCompleted],
     }));
   } catch (e) { /* storage unavailable — fail silently, nothing to gate on */ }
 }
@@ -76,7 +74,6 @@ function restoreProgress() {
     if (saved.circlingItems) circlingItems = saved.circlingItems;
     if (typeof saved.circlingItemCounter === "number") circlingItemCounter = saved.circlingItemCounter;
     if (saved.trianglingTuCompleted) trianglingTuCompleted = new Set(saved.trianglingTuCompleted);
-    if (saved.trianglingElEllaCompleted) trianglingElEllaCompleted = new Set(saved.trianglingElEllaCompleted);
     return true;
   } catch (e) { return false; }
 }
@@ -90,9 +87,12 @@ function vocabMastered() {
 }
 
 function trianglingMastered() {
+  // FIXED: the separate él/ella exercise (and its completion
+  // requirement) has been removed entirely -- that content is now
+  // fully integrated into the main Triangling question pool instead.
+  // DTS unlock now depends only on completing that unified pool.
   const tuTotal = GAME_DATA.triangling.length;
-  const elEllaTotal = GAME_DATA.trianglingElElla.length;
-  return trianglingTuCompleted.size >= tuTotal && trianglingElEllaCompleted.size >= elEllaTotal;
+  return trianglingTuCompleted.size >= tuTotal;
 }
 
 function setCirclingLocked(locked) {
@@ -601,16 +601,10 @@ function setTrianglingLocked(locked) {
     btn.disabled = locked;
     btn.classList.toggle("locked", locked);
   });
-  const elellaBtn = document.getElementById("start-elella-btn");
-  if (elellaBtn) elellaBtn.disabled = locked;
   const lockMsg = document.getElementById("triangling-lock-message");
   if (lockMsg) {
     lockMsg.style.display = locked ? "block" : "none";
   }
-  // NOTE: the second lock message (elella-lock-message) is intentionally
-  // left hidden always -- one message covers the whole Triangling
-  // section now that it's unified under a single heading, avoiding a
-  // duplicate "Complete Circling first" showing twice.
 }
 
 /* ============================================================
@@ -728,7 +722,14 @@ function clearTrianglingAnswer() {
 }
 
 function stripLeadingSiNo(s) {
-  return s.replace(/^(si|no)\s+/, "");
+  // FIXED (the real, confirmed bug): the word bank button is literally
+  // "Sí" with an accent. normalize() lowercases but never strips accents,
+  // so a user's completely reasonable "Sí, Harry, eres..." attempt was
+  // being compared against this regex looking for the UNACCENTED "si" --
+  // which can never match. This is why "lots of correct questions were
+  // rejected" specifically whenever "Sí" was involved. Now matches the
+  // real accented character.
+  return s.replace(/^(sí|si|no)\s+/, "");
 }
 
 function checkTrianglingAnswer() {
@@ -787,53 +788,6 @@ function submitTrianglingAnswer(item) {
    voice) -- same single-tap pattern as Circling, since there's no
    personal voice to break down word-by-word here.
    ============================================================ */
-
-let elellaQueue = [];
-let elellaIndex = 0;
-
-function startTrianglingElElla() {
-  elellaQueue = [...GAME_DATA.trianglingElElla].sort(() => Math.random() - 0.5);
-  elellaIndex = 0;
-  renderElEllaQuestion();
-}
-
-function renderElEllaQuestion() {
-  const container = document.getElementById("elella-container");
-  if (!container) return;
-
-  if (elellaIndex >= elellaQueue.length) {
-    container.innerHTML = `<p>All done for now!</p>`;
-    return;
-  }
-
-  const item = elellaQueue[elellaIndex];
-  playAudio(item.questionAudio); // Narrator auto-asks
-
-  container.innerHTML = `
-    <div id="elella-question">${item.question}</div>
-    <div id="elella-answer-input"></div>
-    <div id="elella-feedback"></div>
-  `;
-  const btn = document.createElement("button");
-  btn.className = "circling-answer-btn";
-  btn.textContent = item.answer;
-  btn.onclick = () => {
-    flashTap(btn);
-    // FIXED: same overlapping-audio bug as Circling/Triangling --
-    // fixed setTimeout guesses replaced with real 'ended' sequencing.
-    playAudio(item.answerAudio, () => {
-      playAudio(item.confirmAudio, () => {
-        document.getElementById("elella-feedback").textContent = item.confirm;
-        trianglingElEllaCompleted.add(item.id);
-        saveProgress();
-        checkGateProgression();
-        elellaIndex += 1;
-        setTimeout(renderElEllaQuestion, 500);
-      });
-    });
-  };
-  document.getElementById("elella-answer-input").appendChild(btn);
-}
 
 /* ============================================================
    VOCABULARY MASTERY QUIZ — real test, reusing the exact same
