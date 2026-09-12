@@ -110,6 +110,30 @@
     font-weight: 700; font-size: 1rem;
   }
   .circling-answer-btn:hover { border-color: var(--orange); }
+
+  .ser-box {
+    background: var(--panel-warm,#FFF3E0);
+    border: 2px solid var(--orange,#FF8A3D);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .ser-box-header {
+    font-weight: 800;
+    color: var(--navy,#1B2A4A);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ser-table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    color: var(--navy,#1B2A4A);
+  }
+  .ser-table td {
+    padding: 3px 10px 3px 0;
+  }
 </style>
 </head>
 <body>
@@ -153,6 +177,15 @@
     <img src="harry.png" alt="Harry" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
     <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
   </div>
+  <div class="ser-box">
+    <div class="ser-box-header" onclick="toggleSerBox('triangling')">📖 SER: to be <span id="ser-toggle-triangling">▲</span></div>
+    <table class="ser-table" id="ser-table-triangling">
+      <tr><td>(Yo) soy</td><td>I am</td></tr>
+      <tr><td>(Tú) eres</td><td>You are</td></tr>
+      <tr><td>(Él) es</td><td>He is</td></tr>
+      <tr><td>(Ella) es</td><td>She is</td></tr>
+    </table>
+  </div>
   <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
 
   <div class="char-select" id="triangling-char-select"></div>
@@ -168,6 +201,15 @@
       <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
       <div style="font-size:0.8rem;color:#8A7A9B;">Tap Harry anytime to hear him model the role play again</div>
     </div>
+  </div>
+  <div class="ser-box">
+    <div class="ser-box-header" onclick="toggleSerBox('dts')">📖 SER: to be <span id="ser-toggle-dts">▲</span></div>
+    <table class="ser-table" id="ser-table-dts">
+      <tr><td>(Yo) soy</td><td>I am</td></tr>
+      <tr><td>(Tú) eres</td><td>You are</td></tr>
+      <tr><td>(Él) es</td><td>He is</td></tr>
+      <tr><td>(Ella) es</td><td>She is</td></tr>
+    </table>
   </div>
   <div id="dts-now-speaking" style="font-weight:700;color:var(--navy,#1B2A4A);margin-bottom:8px;"></div>
   <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
