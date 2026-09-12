@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuatro Amigos — DTS Staging</title>
+<style>
+  :root {
+    --navy: #1B2A4A; --orange: #FF8A3D; --green: #2FBE73; --coral: #E85B5B;
+    --cream: #FFF8ED; --panel: #FFFFFF; --panel-warm: #FFF3E0; --line: #EDE3D6;
+    --text-muted: #8A7A9B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", sans-serif; background: var(--cream);
+    color: var(--navy); max-width: 640px; margin: 0 auto; padding: 24px 16px 60px;
+    line-height: 1.5;
+  }
+  h1 {
+    font-size: 1.5rem; font-weight: 800; color: var(--orange); text-align: center;
+    margin: 0 0 20px;
+  }
+  h2 {
+    font-size: 1.1rem; font-weight: 800; color: var(--navy); margin: 32px 0 12px;
+    padding-bottom: 8px; border-bottom: 3px solid var(--panel-warm);
+  }
+  h3 { font-size: 0.95rem; color: var(--text-muted); margin: 18px 0 8px; font-weight: 700; }
+
+  section, #story-container, #vocab-list, #match-game-container, #vocab-quiz-container,
+  #circling-container, #triangling-container {
+    background: var(--panel); border-radius: 16px; padding: 4px;
+  }
+
+  .story-line {
+    font-size: 1.1rem; font-weight: 600; margin: 8px 0; padding: 10px 14px;
+    background: var(--panel-warm); border-radius: 10px;
+  }
+
+  button {
+    font-family: inherit; font-size: 0.95rem; cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  button:active { transform: scale(0.97); }
+
+  /* Top-level "start this activity" buttons */
+  body > button, h3 + button, #start-circling-btn {
+    display: block; width: 100%; padding: 14px; margin: 10px 0; border: none;
+    border-radius: 14px; background: var(--orange); color: #fff; font-weight: 800;
+    font-size: 1rem; box-shadow: 0 2px 6px rgba(255,138,61,0.3);
+  }
+
+  .char-select { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0; }
+  .char-select button {
+    padding: 10px 16px; border-radius: 14px; border: 2px solid var(--line);
+    background: var(--panel); font-weight: 700; color: var(--navy);
+  }
+  .char-select button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .char-select button.locked { opacity: 0.35; cursor: not-allowed; }
+
+  #triangling-lock-message, #circling-lock-message, #dts-lock-message {
+    color: var(--coral); font-weight: 700; background: #FDEAEA; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 10px; text-align: center; font-size: 0.9rem;
+  }
+  #check-btn:disabled, #start-circling-btn:disabled {
+    opacity: 0.35; cursor: not-allowed; box-shadow: none;
+  }
+
+  .char-thumb { width: 84px; height: 84px; object-fit: cover; border-radius: 50%; display: block; margin: 0 auto 6px; border: 3px solid var(--panel-warm); }
+  #triangling-active-char {
+    display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 12px;
+    background: var(--panel-warm); border-radius: 14px; padding: 10px 14px;
+  }
+  #triangling-active-char img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+
+  #word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+  .word-tile {
+    padding: 10px 16px; border-radius: 12px; border: none; background: var(--orange);
+    color: #fff; font-weight: 700;
+  }
+  .word-tile.selected { background: var(--navy); transform: scale(1.05); }
+
+  #built-sentence {
+    min-height: 44px; font-weight: 700; font-size: 1.05rem; padding: 12px 14px;
+    background: var(--panel-warm); border: 2px dashed var(--orange); border-radius: 14px;
+    margin: 12px 0; display: flex; align-items: center;
+  }
+
+  .actions { display: flex; gap: 10px; }
+  .actions button {
+    flex: 1; padding: 14px; border-radius: 14px; border: none; color: white;
+    font-weight: 800; font-size: 1rem;
+  }
+  #check-btn, #triangling-check-btn { background: var(--green); }
+  #clear-btn, #triangling-clear-btn { background: #E5E5E5; color: var(--navy); }
+
+  .feedback-correct { color: var(--green); font-weight: 800; display: block; margin-top: 10px; text-align: center; }
+  .feedback-retry { color: var(--coral); font-weight: 800; display: block; margin-top: 10px; text-align: center; }
+
+  .vocab-word {
+    padding: 10px 16px; margin: 4px; border-radius: 12px; border: 2px solid var(--line);
+    background: var(--panel); cursor: pointer; font-weight: 700; color: var(--navy);
+    display: inline-block;
+  }
+
+  #match-game-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 14px 0; }
+
+  .circling-answer-btn {
+    display: block; width: 100%; padding: 12px; margin: 6px 0; border-radius: 12px;
+    border: 2px solid var(--line); background: var(--panel); color: var(--navy);
+    font-weight: 700; font-size: 1rem;
+  }
+  .circling-answer-btn:hover { border-color: var(--orange); }
+
+  .ser-box {
+    background: var(--panel-warm,#FFF3E0);
+    border: 2px solid var(--orange,#FF8A3D);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .ser-box-header {
+    font-weight: 800;
+    color: var(--navy,#1B2A4A);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ser-table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    color: var(--navy,#1B2A4A);
+  }
+  .ser-table td {
+    padding: 3px 10px 3px 0;
+  }
+</style>
+</head>
+<body>
+  <h1>🎭 Cuatro Amigos</h1>
+
+  <button onclick="playStory()">▶ Play Story</button>
+  <div id="story-characters-row" style="display:flex;justify-content:center;gap:14px;margin:14px 0;">
+    <img src="paula.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="lez.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="clifford.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="harry.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+  </div>
+  <div id="story-container"></div>
+
+  <h2>1. Vocabulary</h2>
+  <div id="vocab-list"></div>
+
+  <h3>Practice: Match Game (optional)</h3>
+  <button onclick="startVocabMatchGame()">Start Match Game</button>
+  <div id="match-game-container"></div>
+
+  <h3>Mastery Test (required)</h3>
+  <button onclick="initVocabQuiz()">Start Mastery Test</button>
+  <div id="vocab-quiz-container"></div>
+
+  <h2>2. Circling</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Harry the elephant is asking the group questions based on the story you heard at the beginning of the app. You can listen to the story again if you wish. Then answer for the group by selecting the correct answers.</p>
+  <div id="circling-lock-message">🔒 Complete the Vocabulary Mastery Test — every word answered correctly several times — to unlock Circling.</div>
+  <button onclick="showMyProgress()" style="background:#EEE;color:#333;">🔍 Check My Progress</button>
+  <button onclick="instantMasterVocab()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Vocabulary</button>
+  <button onclick="instantMasterCircling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Circling</button>
+  <button id="start-circling-btn" onclick="startCircling()">Start Circling</button>
+  <div id="circling-container"></div>
+  <div id="circling-gate-progress"></div>
+
+  <h2>3. Triangling</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Here Harry the elephant asks one character at a time questions about the story. Select a character then answer the questions from the perspective of that character.</p>
+  <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
+  <button onclick="instantMasterTriangling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Triangling</button>
+  <div id="triangling-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
+    <img src="harry.png" alt="Harry" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
+    <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
+  </div>
+  <div class="ser-box">
+    <div class="ser-box-header" onclick="toggleSerBox('triangling')">📖 SER: to be <span id="ser-toggle-triangling">▲</span></div>
+    <table class="ser-table" id="ser-table-triangling">
+      <tr><td>(Yo) soy</td><td>I am</td></tr>
+      <tr><td>(Tú) eres</td><td>You are</td></tr>
+      <tr><td>(Él) es</td><td>He is</td></tr>
+      <tr><td>(Ella) es</td><td>She is</td></tr>
+    </table>
+  </div>
+  <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
+
+  <div class="char-select" id="triangling-char-select"></div>
+  <div id="triangling-container"></div>
+
+
+  <h2>4. DTS — Role Play</h2>
+  <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Based on the story, the 4 characters will take turns telling as many things as they can about the other characters. They will each be speaking exclusively to Harry the elephant.<br><br>Harry models the role play talking about himself and the other characters from his perspective.<br><br>Then, you the user will play each role (except Harry's) by 1. selecting a character, then 2. creating complete sentences from that character's perspective, pressing the word buttons.</p>
+  <div id="dts-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
+    <img id="dts-harry-img" src="harry.png" alt="Harry" onclick="replayDtsModel()" style="width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
+    <div>
+      <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
+      <div style="font-size:0.8rem;color:#8A7A9B;">Tap Harry anytime to hear him model the role play again</div>
+    </div>
+  </div>
+  <div class="ser-box">
+    <div class="ser-box-header" onclick="toggleSerBox('dts')">📖 SER: to be <span id="ser-toggle-dts">▲</span></div>
+    <table class="ser-table" id="ser-table-dts">
+      <tr><td>(Yo) soy</td><td>I am</td></tr>
+      <tr><td>(Tú) eres</td><td>You are</td></tr>
+      <tr><td>(Él) es</td><td>He is</td></tr>
+      <tr><td>(Ella) es</td><td>She is</td></tr>
+    </table>
+  </div>
+  <div id="dts-now-speaking" style="font-weight:700;color:var(--navy,#1B2A4A);margin-bottom:8px;"></div>
+  <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
+  <div class="char-select" id="char-select"></div>
+  <div id="word-bank"></div>
+  <div id="built-sentence"></div>
+  <div class="actions">
+    <button id="check-btn" onclick="checkSentence()">Check</button>
+    <button id="clear-btn" onclick="clearSentence()">Clear</button>
+  </div>
+  <div id="feedback"></div>
+
+<script src="game3.js"></script>
+<script>
+  loadGameData().then(() => {
+    renderVocabulary(document.getElementById("vocab-list"));
+    const sel = document.getElementById("char-select");
+    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
+      const btn = document.createElement("button");
+      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
+      btn.onclick = () => {
+        document.querySelectorAll(".char-select button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectCharacter(c.name);
+        const label = document.getElementById("dts-now-speaking");
+        if (label) label.textContent = "Now speaking: " + c.name;
+      };
+      sel.appendChild(btn);
+    });
+
+    const triSel = document.getElementById("triangling-char-select");
+    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
+      const btn = document.createElement("button");
+      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
+      btn.onclick = () => {
+        document.querySelectorAll("#triangling-char-select button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectTrianglingCharacter(c.name);
+      };
+      triSel.appendChild(btn);
+    });
+    // FIXED: this used to unconditionally lock everything on every single
+    // page load, no matter what progress existed — combined with
+    // vocabQuizItems/circlingItems/trianglingCompleted never being saved
+    // anywhere, this meant a genuinely-earned unlock always reverted the
+    // moment the page reloaded. Now restores real saved progress first,
+    // then computes each gate from that actual state.
+    restoreProgress();
+    checkGateProgression();       // sets Circling lock + DTS lock
+    updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
+  });
+</script>
+</body>
+</html>

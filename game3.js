@@ -120,15 +120,13 @@ function setDtsLocked(locked) {
 
 // Harry modeling his own DTS turn -- plays once automatically the first
 // time DTS unlocks, and can be replayed anytime by tapping Harry's image.
-// NEW RECORDING NEEDED: "m_harry_dts_model.mp3" -- Harry's full modeled
-// speech, e.g. "Soy Harry. Soy un elefante. Soy pequeño. Paula, eres una
-// chica... [etc, his complete DTS turn about himself and everyone else]".
+// Recorded and confirmed live in the repo as of DTS_Update_v10.
 function playDtsModel() {
   const label = document.getElementById("dts-now-speaking");
   const harryImg = document.getElementById("dts-harry-img");
   if (label) label.textContent = "Now speaking: Harry";
   if (harryImg) harryImg.style.boxShadow = "0 0 0 3px var(--orange,#FF8A3D)";
-  playAudio("m_harry_dts_model.mp3", () => {
+  playAudio("narr_harry_dts_model.mp3", () => {
     if (label) label.textContent = "";
     if (harryImg) harryImg.style.boxShadow = "none";
   });
@@ -136,6 +134,14 @@ function playDtsModel() {
 
 function replayDtsModel() {
   playDtsModel();
+}
+
+function toggleSerBox(phase) {
+  const table = document.getElementById("ser-table-" + phase);
+  const toggle = document.getElementById("ser-toggle-" + phase);
+  const collapsed = table.style.display === "none";
+  table.style.display = collapsed ? "table" : "none";
+  toggle.textContent = collapsed ? "▲" : "▼";
 }
 
 function checkGateProgression() {
@@ -721,30 +727,17 @@ function clearTrianglingAnswer() {
   document.getElementById("triangling-built").textContent = "";
 }
 
-function stripLeadingSiNo(s) {
-  // FIXED (the real, confirmed bug): the word bank button is literally
-  // "Sí" with an accent. normalize() lowercases but never strips accents,
-  // so a user's completely reasonable "Sí, Harry, eres..." attempt was
-  // being compared against this regex looking for the UNACCENTED "si" --
-  // which can never match. This is why "lots of correct questions were
-  // rejected" specifically whenever "Sí" was involved. Now matches the
-  // real accented character.
-  return s.replace(/^(sí|si|no)\s+/, "");
-}
-
 function checkTrianglingAnswer() {
   const item = trianglingQueue[trianglingIndex];
   const attempt = trianglingSelectedWords.join(" ").trim();
-  // FIXED: some correct answers were only ever recorded as the bare fact
-  // (no "Sí,"/"No." prefix), even though every other question in this
-  // exercise DOES use that prefix. A user reasonably including "Sí" or
-  // "No" -- matching the pattern they've already learned -- was being
-  // rejected purely because of this recording gap, not because they
-  // were actually wrong. Now tolerant of an optional leading Sí/No on
-  // either side, so both phrasings work and still play the same correct
-  // audio either way.
-  const a = stripLeadingSiNo(normalize(attempt));
-  const b = stripLeadingSiNo(normalize(item.answer));
+  // FIXED: every Triangling answer now has the correct Sí/No baked in (or
+  // is deliberately bare, for either/or questions), each matched to its
+  // own correctly-recorded audio -- so an exact match is correct and
+  // sufficient now. The old stripLeadingSiNo tolerance hack is removed:
+  // it was compensating for a data gap that's fixed at the source, and
+  // it was also letting a wrong Sí/No choice slip through as "correct."
+  const a = normalize(attempt);
+  const b = normalize(item.answer);
   if (a === b) {
     submitTrianglingAnswer(item);
   } else {
