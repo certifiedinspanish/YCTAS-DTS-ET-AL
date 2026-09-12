@@ -241,6 +241,12 @@
         "about": "Harry",
         "sentence": "Eres pequeño",
         "audio": "f_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "f_eres_harry.mp3"
       }
     ],
     "Harry": [
@@ -353,6 +359,12 @@
         "about": "Harry",
         "sentence": "Eres pequeño",
         "audio": "m_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "m_eres_harry.mp3"
       }
     ],
     "Clifford": [
@@ -409,6 +421,12 @@
         "about": "Harry",
         "sentence": "Eres pequeño",
         "audio": "m_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "m_eres_harry.mp3"
       }
     ]
   },
