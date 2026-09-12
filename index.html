@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cuatro Amigos — DTS Staging</title>
+<title>Cuatro Amigos — a YCTAS! Spanish Adventure</title>
 <style>
   :root {
     --navy: #1B2A4A; --orange: #FF8A3D; --green: #2FBE73; --coral: #E85B5B;
@@ -137,7 +137,7 @@
 </style>
 </head>
 <body>
-  <h1>🎭 Cuatro Amigos</h1>
+  <h1>🎭 Cuatro Amigos — a YCTAS! Spanish Adventure</h1>
 
   <button onclick="playStory()">▶ Play Story</button>
   <div id="story-characters-row" style="display:flex;justify-content:center;gap:14px;margin:14px 0;">
@@ -148,7 +148,7 @@
   </div>
   <div id="story-container"></div>
 
-  <h2>1. Vocabulary</h2>
+  <h2>Vocabulary Challenge: Sure You Can Master These Words?</h2>
   <div id="vocab-list"></div>
 
   <h3>Practice: Match Game (optional)</h3>
@@ -159,7 +159,7 @@
   <button onclick="initVocabQuiz()">Start Mastery Test</button>
   <div id="vocab-quiz-container"></div>
 
-  <h2>2. Circling</h2>
+  <h2>Q&amp;A with Harry (one-word answers)</h2>
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Harry the elephant is asking the group questions based on the story you heard at the beginning of the app. You can listen to the story again if you wish. Then answer for the group by selecting the correct answers.</p>
   <div id="circling-lock-message">🔒 Complete the Vocabulary Mastery Test — every word answered correctly several times — to unlock Circling.</div>
   <button onclick="showMyProgress()" style="background:#EEE;color:#333;">🔍 Check My Progress</button>
@@ -169,7 +169,7 @@
   <div id="circling-container"></div>
   <div id="circling-gate-progress"></div>
 
-  <h2>3. Triangling</h2>
+  <h2>ROLE PLAY I: Let's Talk with Harry (full sentence answers)</h2>
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Here Harry the elephant asks one character at a time questions about the story. Select a character then answer the questions from the perspective of that character.</p>
   <div id="triangling-lock-message">🔒 Complete Circling first to unlock Triangling!</div>
   <button onclick="instantMasterTriangling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Triangling</button>
@@ -192,7 +192,7 @@
   <div id="triangling-container"></div>
 
 
-  <h2>4. DTS — Role Play</h2>
+  <h2>ROLE PLAY II: Tell Harry What You've Learned</h2>
   <div id="dts-lock-message">🔒 Complete Triangling first to unlock DTS!</div>
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Based on the story, the 4 characters will take turns telling as many things as they can about the other characters. They will each be speaking exclusively to Harry the elephant.<br><br>Harry models the role play talking about himself and the other characters from his perspective.<br><br>Then, you the user will play each role (except Harry's) by 1. selecting a character, then 2. creating complete sentences from that character's perspective, pressing the word buttons.</p>
   <div id="dts-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
@@ -262,35 +262,5 @@
     updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
   });
 </script>
-  <script>
-(async function() {
-  const res = await fetch('status.json?_=' + Date.now());
-  const status = await res.json();
-
-  const expired = status.expires && new Date() > new Date(status.expires);
-
-  if (!status.active || expired) {
-    document.body.innerHTML = `<div style="text-align:center;padding:60px;font-family:sans-serif;">
-      <p>${status.offlineMessage}</p></div>`;
-    return;
-  }
-
-  const unlocked = sessionStorage.getItem('appUnlocked');
-  if (unlocked !== 'true') {
-    const code = prompt('Enter passcode:');
-    if (code !== status.passcode) {
-      document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
-      return;
-    }
-    sessionStorage.setItem('appUnlocked', 'true');
-  }
-
-  const stamp = document.createElement('div');
-  stamp.textContent = status.label;
-  stamp.style.cssText = 'position:fixed;top:10px;right:10px;background:rgba(0,0,0,0.65);color:#fff;padding:6px 12px;border-radius:6px;font-family:sans-serif;font-size:12px;z-index:99999;pointer-events:none;';
-  document.body.appendChild(stamp);
-})();
-</script>
-<script data-goatcounter="https://yctas-dts-tracker.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
