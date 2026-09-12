@@ -262,5 +262,35 @@
     updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
   });
 </script>
+  <script>
+(async function() {
+  const res = await fetch('status.json?_=' + Date.now());
+  const status = await res.json();
+
+  const expired = status.expires && new Date() > new Date(status.expires);
+
+  if (!status.active || expired) {
+    document.body.innerHTML = `<div style="text-align:center;padding:60px;font-family:sans-serif;">
+      <p>${status.offlineMessage}</p></div>`;
+    return;
+  }
+
+  const unlocked = sessionStorage.getItem('appUnlocked');
+  if (unlocked !== 'true') {
+    const code = prompt('Enter passcode:');
+    if (code !== status.passcode) {
+      document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
+      return;
+    }
+    sessionStorage.setItem('appUnlocked', 'true');
+  }
+
+  const stamp = document.createElement('div');
+  stamp.textContent = status.label;
+  stamp.style.cssText = 'position:fixed;top:10px;right:10px;background:rgba(0,0,0,0.65);color:#fff;padding:6px 12px;border-radius:6px;font-family:sans-serif;font-size:12px;z-index:99999;pointer-events:none;';
+  document.body.appendChild(stamp);
+})();
+</script>
+<script data-goatcounter="https://yctas-dts-tracker.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
