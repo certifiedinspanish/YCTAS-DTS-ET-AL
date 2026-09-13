@@ -60,6 +60,11 @@ function saveProgress() {
       circlingItems,
       circlingItemCounter,
       trianglingTuCompleted: [...trianglingTuCompleted],
+      dtsCorrectCharacters: [...dtsCorrectCharacters],
+      lastKnownProgressPercent,
+      certificateEarned,
+      certificateName,
+      certificateFavorite,
     }));
   } catch (e) { /* storage unavailable — fail silently, nothing to gate on */ }
 }
@@ -74,6 +79,11 @@ function restoreProgress() {
     if (saved.circlingItems) circlingItems = saved.circlingItems;
     if (typeof saved.circlingItemCounter === "number") circlingItemCounter = saved.circlingItemCounter;
     if (saved.trianglingTuCompleted) trianglingTuCompleted = new Set(saved.trianglingTuCompleted);
+    if (saved.dtsCorrectCharacters) dtsCorrectCharacters = new Set(saved.dtsCorrectCharacters);
+    if (typeof saved.lastKnownProgressPercent === "number") lastKnownProgressPercent = saved.lastKnownProgressPercent;
+    if (typeof saved.certificateEarned === "boolean") certificateEarned = saved.certificateEarned;
+    if (typeof saved.certificateName === "string") certificateName = saved.certificateName;
+    if (typeof saved.certificateFavorite === "string") certificateFavorite = saved.certificateFavorite;
     return true;
   } catch (e) { return false; }
 }
@@ -150,6 +160,148 @@ function checkGateProgression() {
   // mastery separately -- this just also confirms Vocabulary is done
   // first, since the chain is sequential, not just pairwise.
   setDtsLocked(!trianglingMastered());
+  updateOverallProgress();
+}
+
+const PROGRESS_METER_COLORS = ["#BA7517", "#D85A30", "#993C1D", "#FAC775"];
+const PROGRESS_CONFETTI_COUNTS = [3, 6, 9, 14];
+
+// Single source of truth for "how far along is the whole app" -- checked
+// after every gate-affecting action (Vocabulary tap, Circling answer,
+// Triangling answer, DTS sentence). Milestone order matches the app's
+// actual sequential phase order.
+function updateOverallProgress() {
+  const milestones = [
+    vocabMastered(),
+    circlingMasteryStats().allMastered,
+    trianglingMastered(),
+    dtsMastered(),
+  ];
+  const completedCount = milestones.filter(Boolean).length;
+  const percent = completedCount * 25;
+
+  const fill = document.getElementById("progress-fill");
+  const label = document.getElementById("progress-label");
+  if (fill) {
+    fill.style.width = percent + "%";
+    if (completedCount > 0) {
+      fill.style.background = PROGRESS_METER_COLORS[completedCount - 1];
+    }
+  }
+  if (label) {
+    label.textContent = percent === 100
+      ? "All four phases complete!"
+      : `Progress: ${percent}%`;
+  }
+
+  if (percent > lastKnownProgressPercent) {
+    if (fill) {
+      fill.classList.remove("bouncing");
+      void fill.offsetWidth;
+      fill.classList.add("bouncing");
+    }
+    if (completedCount >= 1) {
+      celebrateConfetti(PROGRESS_CONFETTI_COUNTS[completedCount - 1]);
+    }
+    lastKnownProgressPercent = percent;
+    saveProgress();
+  }
+
+  if (percent === 100 && !certificateEarned) {
+    showCertificatePrompt();
+  }
+
+  const viewBtn = document.getElementById("view-certificate-btn");
+  if (viewBtn) viewBtn.style.display = certificateEarned ? "inline-block" : "none";
+}
+
+const CONFETTI_EMOJI = ["🎉", "🎊", "✨"];
+function celebrateConfetti(count) {
+  const stage = document.getElementById("confetti-stage");
+  if (!stage) return;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.textContent = CONFETTI_EMOJI[Math.floor(Math.random() * CONFETTI_EMOJI.length)];
+    piece.style.left = Math.round(Math.random() * 92) + "%";
+    piece.style.animationDelay = (Math.random() * 0.4).toFixed(2) + "s";
+    stage.appendChild(piece);
+    setTimeout(() => piece.remove(), 2500);
+  }
+}
+
+const CHARACTER_EMOJI_FALLBACK = { Paula: "👧", Lez: "🧑", Clifford: "🐕", Harry: "🐘" };
+let selectedFavoriteCharacter = null;
+
+function showCertificatePrompt() {
+  const prompt = document.getElementById("certificate-prompt");
+  if (prompt) prompt.style.display = "block";
+}
+
+function selectFavoriteCharacter(name) {
+  selectedFavoriteCharacter = name;
+  document.querySelectorAll("#favorite-character-select button").forEach(btn => {
+    btn.classList.toggle("selected-favorite", btn.dataset.character === name);
+  });
+  const err = document.getElementById("certificate-favorite-error");
+  if (err) err.style.display = "none";
+}
+
+function submitCertificateForm() {
+  const nameInput = document.getElementById("certificate-name-input");
+  const name = nameInput ? nameInput.value.trim() : "";
+  const nameErr = document.getElementById("certificate-name-error");
+  const favErr = document.getElementById("certificate-favorite-error");
+  let valid = true;
+
+  if (!name) {
+    if (nameErr) nameErr.style.display = "block";
+    valid = false;
+  } else if (nameErr) {
+    nameErr.style.display = "none";
+  }
+
+  if (!selectedFavoriteCharacter) {
+    if (favErr) favErr.style.display = "block";
+    valid = false;
+  } else if (favErr) {
+    favErr.style.display = "none";
+  }
+
+  if (!valid) return;
+
+  certificateName = name;
+  certificateFavorite = selectedFavoriteCharacter;
+  certificateEarned = true;
+  saveProgress();
+
+  const prompt = document.getElementById("certificate-prompt");
+  if (prompt) prompt.style.display = "none";
+  renderCertificate(true);
+}
+
+function renderCertificate(withBigConfetti) {
+  const section = document.getElementById("certificate-section");
+  if (!section) return;
+  document.getElementById("certificate-name-display").textContent = certificateName;
+  document.getElementById("certificate-favorite-display").textContent = certificateFavorite;
+  document.getElementById("certificate-date-display").textContent =
+    new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  const img = document.getElementById("certificate-favorite-img");
+  if (img) img.src = certificateFavorite.toLowerCase() + ".png";
+  section.style.display = "block";
+  section.scrollIntoView({ behavior: "smooth" });
+  if (withBigConfetti) {
+    celebrateConfetti(45);
+  }
+}
+
+function viewCertificateAgain() {
+  renderCertificate(false);
+}
+
+function printCertificate() {
+  window.print();
 }
 
 
@@ -256,6 +408,8 @@ function checkSentence() {
   if (match) {
     playAudio(match.audio);
     showFeedback(true, "¡Correcto!");
+    dtsCorrectCharacters.add(currentCharacter.name);
+    updateOverallProgress();
   } else if (describesSelfInThirdPerson(attempt)) {
     // e.g. Clifford tapping "Clifford es grande" -- grammatically
     // valid Spanish, and genuinely correct content elsewhere in the
@@ -599,6 +753,7 @@ function updateCirclingGateProgress() {
       : `${atBox3Plus} of ${total} mastered — Triangling unlocks once you've got them all!`;
   }
   setTrianglingLocked(!allMastered);
+  updateOverallProgress();
 }
 
 function setTrianglingLocked(locked) {
@@ -641,6 +796,21 @@ let trianglingActiveCharacter = null;
 let trianglingQueue = [];
 let trianglingIndex = 0;
 let trianglingSelectedWords = [];
+
+// Tracks which characters have built at least one genuinely correct DTS
+// sentence -- DTS has no other completion concept (it's open-ended free
+// practice), so "DTS done" is defined, by Curious C's decision, as having
+// spoken correctly as all three role-play characters at least once each.
+let dtsCorrectCharacters = new Set();
+function dtsMastered() {
+  return dtsCorrectCharacters.size >= 3;
+}
+
+// Overall progress meter + certificate state
+let lastKnownProgressPercent = 0;
+let certificateEarned = false;
+let certificateName = "";
+let certificateFavorite = "";
 
 function selectTrianglingCharacter(name) {
   // FIXED: questions used to always appear in the exact same fixed
