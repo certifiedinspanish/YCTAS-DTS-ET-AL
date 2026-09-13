@@ -196,6 +196,8 @@ function updateOverallProgress() {
       fill.style.background = PROGRESS_METER_COLORS[completedCount - 1];
     }
   }
+  const UNLOCKED_PHASE_NAMES = ["Q&A with Harry", "Role Play I", "Role Play II"];
+
   if (label) {
     label.textContent = percent === 100
       ? "All four phases complete!"
@@ -210,6 +212,17 @@ function updateOverallProgress() {
     }
     if (completedCount >= 1) {
       celebrateConfetti(PROGRESS_CONFETTI_COUNTS[completedCount - 1]);
+    }
+    // Briefly announce which phase just unlocked, then settle back to the
+    // plain percentage -- this is the milestone announcement, replacing
+    // the old quiet inline text that used to say the same thing.
+    if (label && completedCount >= 1 && completedCount <= 3) {
+      const unlockedName = UNLOCKED_PHASE_NAMES[completedCount - 1];
+      label.textContent = `🎉 ${unlockedName} unlocked!`;
+      clearTimeout(window._progressLabelRevertTimer);
+      window._progressLabelRevertTimer = setTimeout(() => {
+        label.textContent = `Progress: ${percent}%`;
+      }, 3000);
     }
     lastKnownProgressPercent = percent;
     saveProgress();
@@ -756,9 +769,14 @@ function updateCirclingGateProgress() {
   const { total, atBox3Plus, allMastered } = circlingMasteryStats();
   const gateEl = document.getElementById("circling-gate-progress");
   if (gateEl) {
+    // The "complete" message used to live here as plain text -- now that
+    // the sticky progress meter announces every milestone with confetti
+    // and its own "[Phase] unlocked!" flash, a second quiet text
+    // announcement in this spot is redundant, so it's removed rather
+    // than reworded.
     gateEl.textContent = allMastered
-      ? "Complete — Triangling unlocked!"
-      : `${atBox3Plus} of ${total} mastered — Triangling unlocks once you've got them all!`;
+      ? ""
+      : `${atBox3Plus} of ${total} mastered — Role Play I unlocks once you've got them all!`;
   }
   setTrianglingLocked(!allMastered);
   updateOverallProgress();
