@@ -233,14 +233,20 @@
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Harry, eres un elefante",
-        "audio": "f_harry_eres_un_elefante.mp3"
+        "sentence": "Eres un elefante",
+        "audio": "f_eres_un_elefante.mp3"
       },
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Harry, eres pequeño",
-        "audio": "f_harry_eres_pequeno.mp3"
+        "sentence": "Eres pequeño",
+        "audio": "f_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "f_eres_harry.mp3"
       }
     ],
     "Harry": [
@@ -345,14 +351,20 @@
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Harry, eres un elefante",
-        "audio": "m_harry_eres_un_elefante.mp3"
+        "sentence": "Eres un elefante",
+        "audio": "m_eres_un_elefante.mp3"
       },
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Harry, eres pequeño",
-        "audio": "m_harry_eres_pequeno.mp3"
+        "sentence": "Eres pequeño",
+        "audio": "m_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "m_eres_harry.mp3"
       }
     ],
     "Clifford": [
@@ -401,14 +413,20 @@
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Harry, eres un elefante",
-        "audio": "m_harry_eres_un_elefante.mp3"
+        "sentence": "Eres un elefante",
+        "audio": "m_eres_un_elefante.mp3"
       },
       {
         "category": "Tú",
         "about": "Harry",
-        "sentence": "Harry, eres pequeño",
-        "audio": "m_harry_eres_pequeno.mp3"
+        "sentence": "Eres pequeño",
+        "audio": "m_eres_pequeno.mp3"
+      },
+      {
+        "category": "Tú",
+        "about": "Harry",
+        "sentence": "Eres Harry",
+        "audio": "m_eres_harry.mp3"
       }
     ]
   },

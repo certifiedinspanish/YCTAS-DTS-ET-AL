@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuatro Amigos — a YCTAS! Spanish Adventure</title>
+<style>
+  :root {
+    --navy: #1B2A4A; --orange: #FF8A3D; --green: #2FBE73; --coral: #E85B5B;
+    --cream: #FFF8ED; --panel: #FFFFFF; --panel-warm: #FFF3E0; --line: #EDE3D6;
+    --text-muted: #8A7A9B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", sans-serif; background: var(--cream);
+    color: var(--navy); max-width: 640px; margin: 0 auto; padding: 24px 16px 60px;
+    line-height: 1.5;
+  }
+  h1 {
+    font-size: 1.5rem; font-weight: 800; color: var(--orange); text-align: center;
+    margin: 0 0 20px;
+  }
+  h2 {
+    font-size: 1.1rem; font-weight: 800; color: var(--navy); margin: 32px 0 12px;
+    padding-bottom: 8px; border-bottom: 3px solid var(--panel-warm);
+  }
+  h3 { font-size: 0.95rem; color: var(--text-muted); margin: 18px 0 8px; font-weight: 700; }
+
+  section, #story-container, #vocab-list, #match-game-container, #vocab-quiz-container,
+  #circling-container, #triangling-container {
+    background: var(--panel); border-radius: 16px; padding: 4px;
+  }
+
+  .story-line {
+    font-size: 1.1rem; font-weight: 600; margin: 8px 0; padding: 10px 14px;
+    background: var(--panel-warm); border-radius: 10px;
+  }
+
+  button {
+    font-family: inherit; font-size: 0.95rem; cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  button:active { transform: scale(0.97); }
+
+  /* Top-level "start this activity" buttons */
+  body > button, h3 + button, #start-circling-btn {
+    display: block; width: 100%; padding: 14px; margin: 10px 0; border: none;
+    border-radius: 14px; background: var(--orange); color: #fff; font-weight: 800;
+    font-size: 1rem; box-shadow: 0 2px 6px rgba(255,138,61,0.3);
+  }
+
+  .char-select { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0; }
+  .char-select button {
+    padding: 10px 16px; border-radius: 14px; border: 2px solid var(--line);
+    background: var(--panel); font-weight: 700; color: var(--navy);
+  }
+  .char-select button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .char-select button.locked { opacity: 0.35; cursor: not-allowed; }
+
+  #triangling-lock-message, #circling-lock-message, #dts-lock-message {
+    color: var(--coral); font-weight: 700; background: #FDEAEA; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 10px; text-align: center; font-size: 0.9rem;
+  }
+  #check-btn:disabled, #start-circling-btn:disabled {
+    opacity: 0.35; cursor: not-allowed; box-shadow: none;
+  }
+
+  .char-thumb { width: 84px; height: 84px; object-fit: cover; border-radius: 50%; display: block; margin: 0 auto 6px; border: 3px solid var(--panel-warm); }
+  #triangling-active-char {
+    display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 12px;
+    background: var(--panel-warm); border-radius: 14px; padding: 10px 14px;
+  }
+  #triangling-active-char img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+
+  #word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+  .word-tile {
+    padding: 10px 16px; border-radius: 12px; border: none; background: var(--orange);
+    color: #fff; font-weight: 700;
+  }
+  .word-tile.selected { background: var(--navy); transform: scale(1.05); }
+
+  #built-sentence {
+    min-height: 44px; font-weight: 700; font-size: 1.05rem; padding: 12px 14px;
+    background: var(--panel-warm); border: 2px dashed var(--orange); border-radius: 14px;
+    margin: 12px 0; display: flex; align-items: center;
+  }
+
+  .actions { display: flex; gap: 10px; }
+  .actions button {
+    flex: 1; padding: 14px; border-radius: 14px; border: none; color: white;
+    font-weight: 800; font-size: 1rem;
+  }
+  #check-btn, #triangling-check-btn { background: var(--green); }
+  #clear-btn, #triangling-clear-btn { background: #E5E5E5; color: var(--navy); }
+
+  .feedback-correct { color: var(--green); font-weight: 800; display: block; margin-top: 10px; text-align: center; }
+  .feedback-retry { color: var(--coral); font-weight: 800; display: block; margin-top: 10px; text-align: center; }
+
+  .vocab-word {
+    padding: 10px 16px; margin: 4px; border-radius: 12px; border: 2px solid var(--line);
+    background: var(--panel); cursor: pointer; font-weight: 700; color: var(--navy);
+    display: inline-block;
+  }
+
+  #match-game-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 14px 0; }
+
+  .circling-answer-btn {
+    display: block; width: 100%; padding: 12px; margin: 6px 0; border-radius: 12px;
+    border: 2px solid var(--line); background: var(--panel); color: var(--navy);
+    font-weight: 700; font-size: 1rem;
+  }
+  .circling-answer-btn:hover { border-color: var(--orange); }
+
+  .ser-box {
+    background: var(--panel-warm,#FFF3E0);
+    border: 2px solid var(--orange,#FF8A3D);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+  }
+  .ser-box-header {
+    font-weight: 800;
+    color: var(--navy,#1B2A4A);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ser-table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    color: var(--navy,#1B2A4A);
+  }
+  .ser-table td {
+    padding: 3px 10px 3px 0;
+  }
+  @keyframes barbounce {
+    0% { transform: scaleY(1); }
+    30% { transform: scaleY(1.8); }
+    60% { transform: scaleY(0.85); }
+    100% { transform: scaleY(1); }
+  }
+  #progress-fill.bouncing { animation: barbounce 0.5s ease-out; }
+
+  @keyframes confettifall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateY(120px) rotate(480deg); opacity: 0; }
+  }
+  .confetti-piece {
+    position: absolute;
+    top: 0;
+    font-size: 20px;
+    animation: confettifall 2s ease-in forwards;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  #progress-meter-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--panel-warm,#FFF3E0);
+    border-bottom: 2px solid var(--orange,#FF8A3D);
+    padding: 8px 14px;
+  }
+  #progress-bar-track {
+    height: 14px;
+    background: #EEE;
+    border-radius: 8px;
+    overflow: visible;
+    position: relative;
+  }
+  #progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #BA7517;
+    border-radius: 8px;
+    transform-origin: center;
+  }
+
+  .certificate-char-btn.selected-favorite {
+    border: 3px solid #993C1D !important;
+    background: #F0997B !important;
+  }
+  #certificate-name-error, #certificate-favorite-error {
+    display: none;
+    color: var(--text-danger, #A32D2D);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  @media print {
+    body * { visibility: hidden; }
+    #certificate-section, #certificate-section * { visibility: visible; }
+    #certificate-section { position: absolute; top: 0; left: 0; width: 100%; }
+    #progress-meter-wrap, .no-print { display: none !important; }
+  }
+</style>
+</head>
+<body>
+  <h1>🎭 Cuatro Amigos — a YCTAS! Spanish Adventure</h1>
+
+  <div id="progress-meter-wrap">
+    <div id="confetti-stage" style="position:relative;height:0;">
+      <span id="progress-label" style="font-size:13px;font-weight:500;position:relative;">Progress: 0%</span>
+    </div>
+    <div id="progress-bar-track">
+      <div id="progress-fill"></div>
+    </div>
+    <button id="view-certificate-btn" onclick="viewCertificateAgain()" style="display:none;margin-top:6px;font-size:12px;">🏆 View my certificate</button>
+    <button onclick="resetAllProgress()" style="margin-top:6px;margin-left:8px;font-size:12px;background:#EEE;color:#333;">🔄 Start Over</button>
+  </div>
+
+  <button onclick="playStory()">▶ Play Story</button>
+  <div id="story-characters-row" style="display:flex;justify-content:center;gap:14px;margin:14px 0;">
+    <img src="paula.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="lez.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="clifford.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+    <img src="harry.png" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+  </div>
+  <div id="story-container"></div>
+
+  <h2>Vocabulary Challenge: Sure You Can Master These Words?</h2>
+  <div id="vocab-list"></div>
+
+  <h3>Practice: Match Game (optional)</h3>
+  <button onclick="startVocabMatchGame()">Start Match Game</button>
+  <div id="match-game-container"></div>
+
+  <h3>Mastery Test (required)</h3>
+  <button onclick="initVocabQuiz()">Start Mastery Test</button>
+  <div id="vocab-quiz-container"></div>
+
+  <h2><img src="harry.png" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:-6px;margin-right:6px;">Q&amp;A with Harry (one-word answers)</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Harry the elephant is asking the group questions based on the story you heard at the beginning of the app. You can listen to the story again if you wish. Then answer for the group by selecting the correct answers.</p>
+  <div id="circling-lock-message">🔒 Complete the Vocabulary Mastery Test — every word answered correctly several times — to unlock Q&amp;A with Harry.</div>
+  <button onclick="showMyProgress()" style="background:#EEE;color:#333;">🔍 Check My Progress</button>
+  <button onclick="instantMasterVocab()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Vocabulary</button>
+  <button onclick="instantMasterCircling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Circling</button>
+  <button id="start-circling-btn" onclick="startCircling()">Start Q&amp;A with Harry</button>
+  <div id="circling-container"></div>
+  <div id="circling-gate-progress"></div>
+
+  <h2><img src="harry.png" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:-6px;margin-right:6px;">ROLE PLAY I: Let's Talk with Harry (full sentence answers)</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Here Harry the elephant asks one character at a time questions about the story. Select a character then answer the questions from the perspective of that character.</p>
+  <div id="triangling-lock-message">🔒 Complete Q&amp;A with Harry first to unlock Role Play I!</div>
+  <button onclick="instantMasterTriangling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Triangling</button>
+  <div id="triangling-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
+    <img src="harry.png" alt="Harry" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
+    <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
+  </div>
+  <div class="ser-box">
+    <div class="ser-box-header" onclick="toggleSerBox('triangling')">📖 SER: to be <span id="ser-toggle-triangling">▲</span></div>
+    <table class="ser-table" id="ser-table-triangling">
+      <tr><td>(Yo) soy</td><td>I am</td></tr>
+      <tr><td>(Tú) eres</td><td>You are</td></tr>
+      <tr><td>(Él) es</td><td>He is</td></tr>
+      <tr><td>(Ella) es</td><td>She is</td></tr>
+    </table>
+  </div>
+  <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
+
+  <div class="char-select" id="triangling-char-select"></div>
+  <div id="triangling-container"></div>
+
+
+  <h2>ROLE PLAY II: Tell Harry What You've Learned</h2>
+  <div id="dts-lock-message">🔒 Complete Role Play I first to unlock Role Play II!</div>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Based on the story, the 4 characters will take turns telling as many things as they can about the other characters. They will each be speaking exclusively to Harry the elephant.<br><br>Harry models the role play talking about himself and the other characters from his perspective.<br><br>Then, you the user will play each role (except Harry's) by 1. selecting a character, then 2. creating complete sentences from that character's perspective, pressing the word buttons.</p>
+  <div id="dts-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
+    <img id="dts-harry-img" src="harry.png" alt="Harry" onclick="replayDtsModel()" style="width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
+    <div>
+      <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
+      <div style="font-size:0.8rem;color:#8A7A9B;">Tap Harry anytime to hear him model the role play again</div>
+    </div>
+  </div>
+  <div class="ser-box">
+    <div class="ser-box-header" onclick="toggleSerBox('dts')">📖 SER: to be <span id="ser-toggle-dts">▲</span></div>
+    <table class="ser-table" id="ser-table-dts">
+      <tr><td>(Yo) soy</td><td>I am</td></tr>
+      <tr><td>(Tú) eres</td><td>You are</td></tr>
+      <tr><td>(Él) es</td><td>He is</td></tr>
+      <tr><td>(Ella) es</td><td>She is</td></tr>
+    </table>
+  </div>
+  <div id="dts-now-speaking" style="font-weight:700;color:var(--navy,#1B2A4A);margin-bottom:8px;"></div>
+  <p style="font-size:0.85rem;color:#8A7A9B;margin:-4px 0 10px;">Now choose who you'll speak as:</p>
+  <div class="char-select" id="char-select"></div>
+  <div id="word-bank"></div>
+  <div id="built-sentence"></div>
+  <div class="actions">
+    <button id="check-btn" onclick="checkSentence()">Check</button>
+    <button id="clear-btn" onclick="clearSentence()">Clear</button>
+  </div>
+  <div id="feedback"></div>
+
+  <div id="certificate-prompt" style="display:none;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:16px;margin-top:20px;">
+    <h2 style="margin-top:0;">🎉 You've completed all four phases!</h2>
+    <p>Enter your name and pick your favorite friend to generate your certificate.</p>
+    <label for="certificate-name-input" style="font-size:13px;font-weight:500;">Your name</label>
+    <input type="text" id="certificate-name-input" style="display:block;width:100%;box-sizing:border-box;padding:8px;margin:4px 0 4px;">
+    <div id="certificate-name-error">Enter your name first.</div>
+    <p style="font-size:13px;font-weight:500;margin-bottom:6px;">Choose your favorite friend</p>
+    <div id="favorite-character-select" style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button type="button" class="certificate-char-btn" data-character="Paula" onclick="selectFavoriteCharacter('Paula')"><img src="paula.png" style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;"><br>Paula</button>
+      <button type="button" class="certificate-char-btn" data-character="Lez" onclick="selectFavoriteCharacter('Lez')"><img src="lez.png" style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;"><br>Lez</button>
+      <button type="button" class="certificate-char-btn" data-character="Clifford" onclick="selectFavoriteCharacter('Clifford')"><img src="clifford.png" style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;"><br>Clifford</button>
+      <button type="button" class="certificate-char-btn" data-character="Harry" onclick="selectFavoriteCharacter('Harry')"><img src="harry.png" style="width:50px;height:50px;border-radius:50%;object-fit:cover;display:block;"><br>Harry</button>
+    </div>
+    <div id="certificate-favorite-error">Pick a favorite friend first.</div>
+    <button onclick="submitCertificateForm()" style="margin-top:14px;">Generate My Certificate</button>
+  </div>
+
+  <div id="certificate-section" style="display:none;margin-top:20px;">
+    <div style="background:#FFF3E0;border:3px solid #993C1D;border-radius:16px;padding:24px 20px;text-align:center;position:relative;overflow:hidden;max-width:480px;margin:0 auto;">
+      <span style="position:absolute;top:8px;left:10px;font-size:26px;">🎈</span>
+      <span style="position:absolute;top:6px;right:14px;font-size:24px;">🎈</span>
+      <span style="position:absolute;bottom:10px;left:14px;font-size:18px;">✨</span>
+      <span style="position:absolute;bottom:14px;right:16px;font-size:18px;">✨</span>
+      <p style="font-size:12px;letter-spacing:1.5px;color:#993C1D;font-weight:700;margin:0 0 6px;">🏆 CERTIFICATE OF ACHIEVEMENT 🏆</p>
+      <h1 style="margin:0 0 14px;font-size:26px;color:#993C1D;">Cuatro Amigos</h1>
+      <div style="display:flex;justify-content:center;gap:10px;margin-bottom:18px;">
+        <img src="paula.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #993C1D;filter:saturate(1.3) brightness(1.05);">
+        <img src="lez.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #993C1D;filter:saturate(1.3) brightness(1.05);">
+        <img src="clifford.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #993C1D;filter:saturate(1.3) brightness(1.05);">
+        <img src="harry.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #993C1D;filter:saturate(1.3) brightness(1.05);">
+      </div>
+      <img id="certificate-favorite-img" src="clifford.png" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #993C1D;filter:saturate(1.35) brightness(1.08);margin-bottom:16px;">
+      <p style="font-size:14px;color:#712B13;margin:0 0 4px;">This certifies that</p>
+      <p id="certificate-name-display" style="font-size:22px;font-weight:700;margin:0 0 4px;color:#D85A30;"></p>
+      <p style="font-size:14px;color:#712B13;margin:0 0 20px;">has completed Cuatro Amigos, choosing <span id="certificate-favorite-display"></span> as their favorite friend 🎉</p>
+      <p id="certificate-date-display" style="font-size:13px;color:#993C1D;margin:0 0 16px;"></p>
+      <div style="border-top:2px dashed #FAC775;padding-top:12px;">
+        <p style="font-size:13px;font-weight:700;color:#993C1D;margin:0;">✨ YCTAS! — You Can Talk &amp; Act in Spanish ✨</p>
+      </div>
+    </div>
+    <button class="no-print" onclick="printCertificate()" style="margin-top:16px;width:100%;max-width:480px;display:block;margin-left:auto;margin-right:auto;">🖨️ Print / Save as PDF</button>
+    <button class="no-print" onclick="resetAllProgress()" style="margin-top:10px;width:100%;max-width:480px;display:block;margin-left:auto;margin-right:auto;background:#EEE;color:#333;">🔄 Start Over</button>
+  </div>
+
+<script src="game3.js"></script>
+<script>
+  loadGameData().then(() => {
+    renderVocabulary(document.getElementById("vocab-list"));
+    const sel = document.getElementById("char-select");
+    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
+      const btn = document.createElement("button");
+      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
+      btn.onclick = () => {
+        document.querySelectorAll(".char-select button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectCharacter(c.name);
+        const label = document.getElementById("dts-now-speaking");
+        if (label) label.textContent = "Now speaking: " + c.name;
+      };
+      sel.appendChild(btn);
+    });
+
+    const triSel = document.getElementById("triangling-char-select");
+    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
+      const btn = document.createElement("button");
+      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
+      btn.onclick = () => {
+        document.querySelectorAll("#triangling-char-select button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectTrianglingCharacter(c.name);
+      };
+      triSel.appendChild(btn);
+    });
+    // FIXED: this used to unconditionally lock everything on every single
+    // page load, no matter what progress existed — combined with
+    // vocabQuizItems/circlingItems/trianglingCompleted never being saved
+    // anywhere, this meant a genuinely-earned unlock always reverted the
+    // moment the page reloaded. Now restores real saved progress first,
+    // then computes each gate from that actual state.
+    restoreProgress();
+    checkGateProgression();       // sets Circling lock + DTS lock
+    updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
+  });
+</script>
+</body>
+</html>
