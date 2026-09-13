@@ -65,6 +65,7 @@ function saveProgress() {
       certificateEarned,
       certificateName,
       certificateFavorite,
+      dtsModelPlayed,
     }));
   } catch (e) { /* storage unavailable — fail silently, nothing to gate on */ }
 }
@@ -84,6 +85,7 @@ function restoreProgress() {
     if (typeof saved.certificateEarned === "boolean") certificateEarned = saved.certificateEarned;
     if (typeof saved.certificateName === "string") certificateName = saved.certificateName;
     if (typeof saved.certificateFavorite === "string") certificateFavorite = saved.certificateFavorite;
+    if (typeof saved.dtsModelPlayed === "boolean") dtsModelPlayed = saved.dtsModelPlayed;
     return true;
   } catch (e) { return false; }
 }
@@ -122,8 +124,14 @@ function setDtsLocked(locked) {
   });
   const msg = document.getElementById("dts-lock-message");
   if (msg) msg.style.display = locked ? "block" : "none";
+  // FIXED: dtsModelPlayed previously lived only in page memory, which
+  // resets on every reload -- and every Instant Master button reloads the
+  // page. That meant Harry's one-time intro replayed on every single
+  // reload once Triangling was done, no matter which button caused the
+  // reload, since "already played" was never actually remembered.
   if (!locked && !dtsModelPlayed) {
     dtsModelPlayed = true;
+    saveProgress();
     playDtsModel();
   }
 }
