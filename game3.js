@@ -75,7 +75,13 @@ function restoreProgress() {
     const raw = localStorage.getItem(PROGRESS_KEY);
     if (!raw) return false;
     const saved = JSON.parse(raw);
-    if (saved.vocabQuizItems) vocabQuizItems = saved.vocabQuizItems;
+  if (saved.vocabQuizItems) {
+  const currentWords = GAME_DATA.vocabulary.map(v => v.word).sort().join(",");
+  const savedWords = saved.vocabQuizItems.map(it => it.word).sort().join(",");
+  if (currentWords === savedWords) {
+    vocabQuizItems = saved.vocabQuizItems;
+  }
+}
     if (typeof saved.vocabQuizItemCounter === "number") vocabQuizItemCounter = saved.vocabQuizItemCounter;
     if (saved.circlingItems) circlingItems = saved.circlingItems;
     if (typeof saved.circlingItemCounter === "number") circlingItemCounter = saved.circlingItemCounter;
