@@ -202,13 +202,14 @@
   <h1>🎭 Cuatro Amigos — a YCTAS! Spanish Adventure</h1>
 
   <div id="progress-meter-wrap">
-    <div id="confetti-stage" style="position:relative;height:0;">
+    <div id="confetti-stage" style="position:relative;margin-bottom:4px;">
       <span id="progress-label" style="font-size:13px;font-weight:500;position:relative;">Progress: 0%</span>
     </div>
     <div id="progress-bar-track">
       <div id="progress-fill"></div>
     </div>
     <button id="view-certificate-btn" onclick="viewCertificateAgain()" style="display:none;margin-top:6px;font-size:12px;">🏆 View my certificate</button>
+    <button onclick="resetAllProgress()" style="margin-top:6px;margin-left:8px;font-size:12px;background:#EEE;color:#333;">🔄 Start Over</button>
   </div>
 
   <button onclick="playStory()">▶ Play Story</button>
@@ -335,6 +336,7 @@
       </div>
     </div>
     <button class="no-print" onclick="printCertificate()" style="margin-top:16px;width:100%;max-width:480px;display:block;margin-left:auto;margin-right:auto;">🖨️ Print / Save as PDF</button>
+    <button class="no-print" onclick="resetAllProgress()" style="margin-top:10px;width:100%;max-width:480px;display:block;margin-left:auto;margin-right:auto;background:#EEE;color:#333;">🔄 Start Over</button>
   </div>
 
 <script src="game3.js"></script>

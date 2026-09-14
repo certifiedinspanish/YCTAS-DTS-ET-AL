@@ -184,6 +184,24 @@
       "key": "fin",
       "audio": "narr_fin.mp3",
       "english": "the end"
+    },
+    {
+      "word": "cuatro",
+      "key": "cuatro",
+      "audio": "narr_voc_cuatro.mp3",
+      "english": "four"
+    },
+    {
+      "word": "amigos",
+      "key": "amigos",
+      "audio": "narr_voc_amigos.mp3",
+      "english": "friends"
+    },
+    {
+      "word": "Hay",
+      "key": "hay",
+      "audio": "narr_voc_hay.mp3",
+      "english": "there is / there are"
     }
   ],
   "answerBank": {
