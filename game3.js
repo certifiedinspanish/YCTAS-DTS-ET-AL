@@ -540,7 +540,7 @@ function extractCoreAnswer(answer) {
 function playAudio(filename, onDone) {
   // Files live in the repo root, not an "audio/" subfolder --
   // matches how the mp3s actually got uploaded to the staging repo.
-  const audio = new Audio(filename);
+  const audio = new Audio(filename + "?v=19");
   // Real completion callback -- fixes the audio-overlap bug where a
   // fixed setTimeout guessed how long a clip would take, and the next
   // clip started playing before the real one actually finished.
