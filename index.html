@@ -339,7 +339,7 @@
     <button class="no-print" onclick="resetAllProgress()" style="margin-top:10px;width:100%;max-width:480px;display:block;margin-left:auto;margin-right:auto;background:#EEE;color:#333;">🔄 Start Over</button>
   </div>
 
-<script src="game3.js"></script>
+<script src="game3.js?v=19"></script>
 <script>
   loadGameData().then(() => {
     renderVocabulary(document.getElementById("vocab-list"));
@@ -377,6 +377,7 @@
     restoreProgress();
     checkGateProgression();       // sets Circling lock + DTS lock
     updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
+    showResetNoticeIfNeeded();
   });
 </script>
 </body>

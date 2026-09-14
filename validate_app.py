@@ -61,13 +61,15 @@ def main():
     print("=== Voice assignment rules ===")
     vocab = data["vocabulary"]
     name_words = {"Clifford", "Harry", "Lez", "Paula"}
-    non_translatable = set()
-    m = re.search(r'NON_TRANSLATABLE_WORDS\s*=\s*new Set\(\[([^\]]*)\]\)', js)
-    if m:
-        non_translatable = set(re.findall(r'"([^"]+)"', m.group(1)))
-    check("Character names excluded from vocabulary quiz (NON_TRANSLATABLE_WORDS)",
-          name_words.issubset(non_translatable),
-          f"NON_TRANSLATABLE_WORDS found: {non_translatable}")
+    # RULE CHANGED as of v19 (explicit instruction): character names used to
+    # be included in vocabulary but filtered out of the quiz/match via a
+    # NON_TRANSLATABLE_WORDS set. Now they're removed from
+    # GAME_DATA.vocabulary entirely, so the filter itself is gone too --
+    # the new invariant is simply that no character-name entry exists there.
+    vocab_words = {w["word"] for w in vocab}
+    check("Character names removed from vocabulary entirely (post-v19 rule)",
+          name_words.isdisjoint(vocab_words),
+          f"character names still found in vocabulary: {name_words & vocab_words}")
 
     # No Female-voice (f_) file should appear anywhere in the vocabulary or circling question audio
     def all_audio_by_section(section_key):

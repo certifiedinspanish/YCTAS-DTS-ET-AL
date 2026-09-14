@@ -22,7 +22,7 @@ let currentCharacter = null;
 let selectedWords = [];
 
 async function loadGameData() {
-  const res = await fetch("game3_data.json");
+  const res = await fetch("game3_data.json?v=19");
   GAME_DATA = await res.json();
   return GAME_DATA;
 }
@@ -319,6 +319,37 @@ function renderCertificate(withBigConfetti) {
 
 function viewCertificateAgain() {
   renderCertificate(false);
+}
+
+function resetAllProgress() {
+  const sure = confirm(
+    "Start over from the beginning? This will erase all progress, including any earned certificate. This can't be undone."
+  );
+  if (!sure) return;
+  // Simplest, most reliable reset: clear the one saved-progress record and
+  // reload. restoreProgress() only overwrites the in-memory defaults when
+  // it finds something saved -- with nothing saved, every variable (vocab
+  // items, circling items, trianglingTuCompleted, dtsCorrectCharacters,
+  // the meter, certificateEarned/name/favorite, dtsModelPlayed) starts
+  // fresh exactly as it would for a brand-new user.
+  localStorage.removeItem(PROGRESS_KEY);
+  // Flag so the freshly-reloaded page knows to show a reset-confirmation
+  // banner (see showResetNoticeIfNeeded, called on load).
+  sessionStorage.setItem("yctas_dts_just_reset", "1");
+  location.reload();
+}
+
+function showResetNoticeIfNeeded() {
+  if (sessionStorage.getItem("yctas_dts_just_reset") !== "1") return;
+  sessionStorage.removeItem("yctas_dts_just_reset");
+  const notice = document.createElement("div");
+  notice.textContent = "✅ Progress has been reset. Starting fresh!";
+  notice.style.cssText =
+    "position:fixed;top:12px;left:50%;transform:translateX(-50%);" +
+    "background:#2e7d32;color:#fff;padding:10px 20px;border-radius:8px;" +
+    "font-weight:600;font-size:14px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.2);";
+  document.body.appendChild(notice);
+  setTimeout(() => notice.remove(), 3500);
 }
 
 function printCertificate() {
@@ -988,8 +1019,6 @@ let vocabQuizItems = [];
 let vocabQuizItemCounter = 0;
 let currentVocabQuizItem = null;
 
-const NON_TRANSLATABLE_WORDS = new Set(["Clifford", "Harry", "Lez", "Paula"]);
-
 function initVocabQuiz() {
   // FIXED (real bug): this used to unconditionally rebuild vocabQuizItems
   // from scratch every single time "Start Mastery Test" was clicked --
@@ -998,9 +1027,12 @@ function initVocabQuiz() {
   // clicking Start again to resume would silently wipe everything back to
   // zero. Now only builds fresh the first time; resumes existing progress
   // every time after.
+  // NOTE: character names (Clifford/Harry/Lez/Paula) used to be filtered
+  // out here via NON_TRANSLATABLE_WORDS. As of v19 they've been removed
+  // from GAME_DATA.vocabulary entirely (per instruction), so that filter
+  // is gone too -- nothing left for it to do.
   if (vocabQuizItems.length === 0) {
     vocabQuizItems = GAME_DATA.vocabulary
-      .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
       .map(v => ({
         word: v.word, english: v.english, audio: v.audio,
         currentBox: 0, status: "new", dueAtCount: null,
@@ -1114,7 +1146,6 @@ let matchGameLocked = false;
 
 function startVocabMatchGame() {
   matchGameQueue = GAME_DATA.vocabulary
-    .filter(v => !NON_TRANSLATABLE_WORDS.has(v.word))
     .sort(() => Math.random() - 0.5);
   loadNextMatchSet();
 }
