@@ -113,7 +113,12 @@
       "audio": "narr_voc_un.mp3",
       "english": "a/an (masc.)"
     },
-     
+         {
+      "word": "una",
+      "key": "una",
+      "audio": "narr_voc_una.mp3",
+      "english": "a/an (fem.)"
+    },
     {
       "word": "Sí",
       "key": "si",
