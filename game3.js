@@ -234,6 +234,20 @@ function updateOverallProgress() {
 
   const viewBtn = document.getElementById("view-certificate-btn");
   if (viewBtn) viewBtn.style.display = certificateEarned ? "inline-block" : "none";
+
+  // TEMPORARY DIAGNOSTIC (v20 only) -- shows the real numbers behind each
+  // milestone so we can find the actual bug instead of guessing. Remove
+  // once the meter/confetti issue is confirmed fixed.
+  const dbg = document.getElementById("debug-readout");
+  if (dbg) {
+    const c = circlingMasteryStats();
+    dbg.textContent =
+      `DEBUG  vocab: ${vocabQuizItems.filter(i=>i.currentBox>=3).length}/${vocabQuizItems.length} mastered=${vocabMastered()}  |  ` +
+      `circling: ${c.atBox3Plus}/${c.total} mastered=${c.allMastered}  |  ` +
+      `triangling: ${trianglingTuCompleted.size}/${GAME_DATA.triangling.length} mastered=${trianglingMastered()}  |  ` +
+      `dts: ${dtsCorrectCharacters.size}/3 mastered=${dtsMastered()}  |  ` +
+      `percent=${percent}  lastKnown=${lastKnownProgressPercent}`;
+  }
 }
 
 const CONFETTI_EMOJI = ["🎉", "🎊", "✨"];
