@@ -1072,6 +1072,10 @@ function pickNextVocabQuizItem() {
   if (due.length) return due[Math.floor(Math.random() * due.length)];
   const fresh = vocabQuizNew();
   if (fresh.length) return fresh[Math.floor(Math.random() * fresh.length)];
+  const learning = vocabQuizItems.filter(it => it.status === "learning");
+  if (learning.length) {
+    return learning.reduce((soonest, it) => it.dueAtCount < soonest.dueAtCount ? it : soonest);
+  }
   return null;
 }
 
