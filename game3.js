@@ -627,7 +627,7 @@ function circlingNewItems() {
   return circlingItems.filter(it => it.status === "new");
 }
 
-function pickNextCirclingItem() {
+ function pickNextCirclingItem() {
   const due = circlingDueItems();
   if (due.length > 0) {
     return due[Math.floor(Math.random() * due.length)];
@@ -636,7 +636,11 @@ function pickNextCirclingItem() {
   if (fresh.length > 0) {
     return fresh[Math.floor(Math.random() * fresh.length)];
   }
-  return null; // nothing due, nothing new -- fully scheduled ahead
+  const learning = circlingItems.filter(it => it.status === "learning");
+  if (learning.length) {
+    return learning.reduce((soonest, it) => it.dueAtCount < soonest.dueAtCount ? it : soonest);
+  }
+  return null;
 }
 
 let circlingCorrectStreak = 0;
