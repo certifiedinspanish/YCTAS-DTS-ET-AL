@@ -505,6 +505,9 @@ function checkSentence() {
   } else {
     showFeedback(false, "Not quite — check the story details");
   }
+    dtsCorrectStreak = (typeof dtsCorrectStreak === "number" ? dtsCorrectStreak : 0) + (match ? 1 : -dtsCorrectStreak);
+  const stopEl = document.getElementById("dts-stopping-point");
+  if (stopEl) stopEl.style.display = (dtsCorrectStreak >= 6) ? "block" : "none";
   clearSentence();
 }
 
