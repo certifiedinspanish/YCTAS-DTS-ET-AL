@@ -135,10 +135,10 @@ function setDtsLocked(locked) {
   // page. That meant Harry's one-time intro replayed on every single
   // reload once Triangling was done, no matter which button caused the
   // reload, since "already played" was never actually remembered.
-  if (!locked && !dtsModelPlayed) {
+   if (!locked && !dtsModelPlayed) {
     dtsModelPlayed = true;
     saveProgress();
-    playDtsModel();
+    setTimeout(playDtsModel, 3000);
   }
 }
 
