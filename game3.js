@@ -993,7 +993,7 @@ function checkTrianglingAnswer() {
     submitTrianglingAnswer(item);
   } else {
     document.getElementById("triangling-feedback").innerHTML =
-      "Not quite — check the story details.<br><small>Tap the words below again, or tap <b>Clear</b> to start this answer over. Stuck? Tap <b>Skip</b> to move to the next question.</small>";
+      "Not quite — remember, your answer needs to be a full sentence.<br><small>Tap words below to build your answer. Made a mistake? Tap <b>Clear</b> to start over. Can't figure it out? Tap <b>Skip</b> to move on — no penalty.</small>";
     clearTrianglingAnswer();
   }
 }
