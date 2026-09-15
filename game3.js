@@ -919,10 +919,14 @@ function renderTrianglingQuestion() {
   const container = document.getElementById("triangling-container");
   if (!container) return;
 
-  if (trianglingIndex >= trianglingQueue.length) {
+if (trianglingIndex >= trianglingQueue.length) {
+  if (trianglingMastered()) {
+    container.innerHTML = `<p>${trianglingActiveCharacter}'s questions complete!</p><p><strong>🎉 You've completed all of Role Play I!</strong></p>`;
+  } else {
     container.innerHTML = `<p>${trianglingActiveCharacter}'s questions complete! Select a character to continue.</p>`;
-    return;
   }
+  return;
+}
 
   const item = trianglingQueue[trianglingIndex];
   trianglingSelectedWords = [];
