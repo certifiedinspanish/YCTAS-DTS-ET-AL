@@ -422,7 +422,7 @@ function renderCharacterWordBank() {
   // includes Sí/No/y/o/Quién/"Cómo es" -- built for Circling and
   // Triangling only, never usable in any valid DTS sentence. Showing
   // them here was misleading clutter.
-  const dtsWords = dtsUsableVocabulary();
+  const dtsWords = dtsUsableVocabulary().concat(GAME_DATA.characters.map(c => ({ word: c.name })));
   dtsWords.forEach(entry => {
     const btn = document.createElement("button");
     btn.className = "word-tile";
