@@ -960,7 +960,8 @@ function renderTrianglingWordBank(item) {
   const bankEl = document.getElementById("triangling-word-bank");
   bankEl.innerHTML = "";
   const wordPool = dtsUsableVocabulary().concat(
-    GAME_DATA.vocabulary.filter(v => ["Sí", "No"].includes(v.word))
+    GAME_DATA.vocabulary.filter(v => ["Sí", "No"].includes(v.word)),
+    GAME_DATA.characters.map(c => ({ word: c.name }))
   );
   wordPool.forEach(entry => {
     const btn = document.createElement("button");
