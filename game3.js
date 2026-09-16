@@ -407,11 +407,36 @@ function flashTap(el) {
    DTS ROLE-PLAY — character select -> build sentence from word
    bank -> Check -> validate against answerBank -> play confirm audio
    ------------------------------------------------------------ */
-function selectCharacter(name) {
+ function selectCharacter(name) {
   currentCharacter = GAME_DATA.characters.find(c => c.name === name);
   selectedWords = [];
   renderCharacterWordBank();
   renderBuiltSentence();
+  updateRecapButton();
+}
+
+function updateRecapButton() {
+  const btn = document.getElementById("recap-btn");
+  if (!btn || !currentCharacter) return;
+  if (dtsCorrectCharacters.has(currentCharacter.name)) {
+    btn.style.display = "inline-block";
+    btn.textContent = `🎤 I'm done as ${currentCharacter.name} — hear the recap`;
+  } else {
+    btn.style.display = "none";
+  }
+}
+
+function playCharacterRecap() {
+  if (!currentCharacter) return;
+  const bank = GAME_DATA.answerBank[currentCharacter.name] || [];
+  let i = 0;
+  function playNext() {
+    if (i >= bank.length) return;
+    const entry = bank[i];
+    i++;
+    playAudio(entry.audio, playNext);
+  }
+  playNext();
 }
 
 function renderCharacterWordBank() {
