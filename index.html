@@ -145,13 +145,13 @@
   @keyframes confettifall {
     0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
     85% { opacity: 1; }
-    100% { transform: translateY(120px) rotate(480deg); opacity: 0; }
+    100% { transform: translateY(100vh) rotate(480deg); opacity: 0; }
   }
   .confetti-piece {
-    position: absolute;
+    position: fixed;
     top: 0;
     font-size: 20px;
-    animation: confettifall 2s ease-in forwards;
+    animation: confettifall 3.5s ease-in forwards;
     z-index: 50;
     pointer-events: none;
   }
