@@ -267,7 +267,7 @@ function celebrateConfetti(count) {
     piece.style.left = Math.round(Math.random() * 92) + "%";
     piece.style.animationDelay = (Math.random() * 0.4).toFixed(2) + "s";
     stage.appendChild(piece);
-    setTimeout(() => piece.remove(), 2500);
+   setTimeout(() => piece.remove(), 3800);
   }
 }
 
