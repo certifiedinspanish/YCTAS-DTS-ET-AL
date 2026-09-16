@@ -505,7 +505,8 @@ function checkSentence() {
   if (match) {
     playAudio(match.audio);
     showFeedback(true, "¡Correcto!");
-    dtsCorrectCharacters.add(currentCharacter.name);
+   dtsCorrectCharacters.add(currentCharacter.name);
+    updateRecapButton();
     updateOverallProgress();
   } else if (describesSelfInThirdPerson(attempt)) {
     // e.g. Clifford tapping "Clifford es grande" -- grammatically
