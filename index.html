@@ -343,45 +343,48 @@
   </div>
 
 <script src="game3.js?v=19"></script>
-<script>
-  loadGameData().then(() => {
-    renderVocabulary(document.getElementById("vocab-list"));
-    const sel = document.getElementById("char-select");
-    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
-      const btn = document.createElement("button");
-      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
-      btn.onclick = () => {
-        document.querySelectorAll(".char-select button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectCharacter(c.name);
-        const label = document.getElementById("dts-now-speaking");
-        if (label) label.textContent = "Now speaking: " + c.name;
-      };
-      sel.appendChild(btn);
-    });
+ <script>
+(async function() {
+  let status;
+  try {
+    const res = await fetch('status.json?_=' + Date.now());
+    status = await res.json();
+  } catch (e) {
+    document.body.innerHTML = '<div style="text-align:center;padding:60px;font-family:sans-serif;"><p>This preview requires an internet connection.</p></div>';
+    return;
+  }
 
-    const triSel = document.getElementById("triangling-char-select");
-    GAME_DATA.characters.filter(c => c.name !== "Harry").forEach(c => {
-      const btn = document.createElement("button");
-      btn.innerHTML = `<img src="${c.img}" class="char-thumb" alt="${c.name}"><br>${c.name}`;
-      btn.onclick = () => {
-        document.querySelectorAll("#triangling-char-select button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectTrianglingCharacter(c.name);
-      };
-      triSel.appendChild(btn);
-    });
-    // FIXED: this used to unconditionally lock everything on every single
-    // page load, no matter what progress existed — combined with
-    // vocabQuizItems/circlingItems/trianglingCompleted never being saved
-    // anywhere, this meant a genuinely-earned unlock always reverted the
-    // moment the page reloaded. Now restores real saved progress first,
-    // then computes each gate from that actual state.
-    restoreProgress();
-    checkGateProgression();       // sets Circling lock + DTS lock
-    updateCirclingGateProgress(); // sets Triangling lock (also refreshes its progress text)
-    showResetNoticeIfNeeded();
+  const expired = status.expires && new Date() > new Date(status.expires);
+
+  if (!status.active || expired) {
+    document.body.innerHTML = `<div style="text-align:center;padding:60px;font-family:sans-serif;">
+      <p>${status.offlineMessage}</p></div>`;
+    return;
+  }
+
+  const unlocked = sessionStorage.getItem('appUnlocked');
+  if (unlocked !== 'true') {
+    const code = prompt('Enter passcode:');
+    if (code !== status.passcode) {
+      document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
+      return;
+    }
+    sessionStorage.setItem('appUnlocked', 'true');
+  }
+
+  const email = 'info@suveconjugator.com';
+  const stamp = document.createElement('a');
+  stamp.href = 'mailto:' + email;
+  stamp.style.cssText = 'position:fixed;top:40px;right:-60px;transform:rotate(35deg);background:rgba(200,30,30,0.75);color:#fff;padding:8px 70px;text-align:center;font-family:sans-serif;font-weight:bold;font-size:13px;line-height:1.4;z-index:99999;text-decoration:none;box-shadow:0 2px 6px rgba(0,0,0,0.3);';
+  stamp.innerHTML = 'PREVIEW — NOT FOR SALE<br><span style="font-weight:normal;font-size:10px;">Feedback: ' + email + '</span>';
+  stamp.addEventListener('click', function(e) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(email).catch(() => {});
+    }
   });
+  document.body.appendChild(stamp);
+})();
 </script>
+<script data-goatcounter="https://yctas-dts-tracker.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
