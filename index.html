@@ -411,7 +411,25 @@
     }
     sessionStorage.setItem('appUnlocked', 'true');
   }
+  // --- Student code tracking ---
+  const TRACK_URL = 'https://script.google.com/macros/s/AKfycbxCFSS1BFORF55zUjgrYus8-AKYJALKbT1poUodllGUIVgnBgVSD1_PTVCZaBMwjxv6/exec';
+  const APP_NAME = 'yctas-dts';
 
+  let studentCode = localStorage.getItem('studentCode');
+  if (!studentCode) {
+    studentCode = prompt('Enter your STUDENT CODE (this is different from the passcode):');
+    if (studentCode) {
+      localStorage.setItem('studentCode', studentCode);
+    }
+  }
+
+  if (studentCode) {
+    fetch(TRACK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ code: studentCode, app: APP_NAME, eventType: 'sign-in', value: '' })
+    }).catch(() => {});
+  }
   const email = 'info@suveconjugator.com';
   const stamp = document.createElement('a');
   stamp.href = 'mailto:' + email;
