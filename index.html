@@ -430,7 +430,10 @@
       body: JSON.stringify({ code: studentCode, app: APP_NAME, eventType: 'sign-in', value: '' })
     }).catch(() => {});
   }
-    function endSession() {
+       const sessionStart = Date.now();
+  let sessionEnded = false;
+
+  function endSession() {
     if (sessionEnded) return;
     sessionEnded = true;
     const minutes = Math.round((Date.now() - sessionStart) / 60000 * 10) / 10;
@@ -441,6 +444,11 @@
       body: JSON.stringify({ code: studentCode, app: APP_NAME, eventType: 'session-end', value: minutes })
     }).catch(() => {});
   }
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') endSession();
+  });
+  window.addEventListener('pagehide', endSession);
   const email = 'info@suveconjugator.com';
   const stamp = document.createElement('a');
   stamp.href = 'mailto:' + email;
