@@ -402,14 +402,14 @@
     return;
   }
 
-  const unlocked = sessionStorage.getItem('appUnlocked');
+  const unlocked = localStorage.getItem('appUnlocked');
   if (unlocked !== 'true') {
     const code = prompt('Enter passcode:');
     if (code !== status.passcode) {
       document.body.innerHTML = '<p style="text-align:center;padding:60px;">Incorrect passcode.</p>';
       return;
     }
-    sessionStorage.setItem('appUnlocked', 'true');
+    localStorage.setItem('appUnlocked', 'true');
   }
   // --- Student code tracking ---
   const TRACK_URL = 'https://script.google.com/macros/s/AKfycbxCFSS1BFORF55zUjgrYus8-AKYJALKbT1poUodllGUIVgnBgVSD1_PTVCZaBMwjxv6/exec';
