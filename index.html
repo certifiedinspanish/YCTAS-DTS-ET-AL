@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cuatro Amigos — a YCTAS! Spanish Adventure</title>
+<title>Cuatro Amigos — a YCTAS! Spanish Conversation</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=1">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=1">
@@ -202,10 +202,24 @@
     #certificate-section { position: absolute; top: 0; left: 0; width: 100%; }
     #progress-meter-wrap, .no-print { display: none !important; }
   }
+  /* Test-only buttons: hidden unless opened with the private tester link */
+  .test-only { display: none !important; }
+  body.is-tester .test-only { display: inline-block !important; }
 </style>
 </head>
 <body>
-  <h1><img src="icon-192.png?v=1" alt="" width="56" height="56" style="display:block;margin:0 auto 10px;border-radius:22%;box-shadow:0 3px 8px rgba(27,42,74,0.3);">Cuatro Amigos — a YCTAS! Spanish Adventure</h1>
+<script>
+(function () {
+  var KEY = 'amigosTester', WORD = 'harryelefante';
+  try {
+    var t = new URLSearchParams(location.search).get('tester');
+    if (t === WORD) localStorage.setItem(KEY, '1');
+    if (t === 'off') localStorage.removeItem(KEY);
+    if (localStorage.getItem(KEY) === '1') document.body.classList.add('is-tester');
+  } catch (e) {}
+})();
+</script>
+  <h1><img src="icon-192.png?v=1" alt="" width="56" height="56" style="display:block;margin:0 auto 10px;border-radius:22%;box-shadow:0 3px 8px rgba(27,42,74,0.3);">Cuatro Amigos — a YCTAS! Spanish Conversation</h1>
 
   <div id="progress-meter-wrap">
     <div id="confetti-stage" style="position:relative;margin-bottom:4px;">
@@ -242,8 +256,8 @@
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Harry the elephant is asking the group questions based on the story you heard at the beginning of the app. You can listen to the story again if you wish. Then answer for the group by selecting the correct answers.</p>
   <div id="circling-lock-message">🔒 Complete the Vocabulary Mastery Test — every word answered correctly several times — to unlock Q&amp;A with Harry.</div>
   <button onclick="showMyProgress()" style="background:#EEE;color:#333;">🔍 Check My Progress</button>
-  <button onclick="instantMasterVocab()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Vocabulary</button>
-  <button onclick="instantMasterCircling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Circling</button>
+  <button class="test-only" onclick="instantMasterVocab()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Vocabulary</button>
+  <button class="test-only" onclick="instantMasterCircling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Circling</button>
   <button id="start-circling-btn" onclick="startCircling()">Start Q&amp;A with Harry</button>
   <div id="circling-container"></div>
   <div id="circling-gate-progress"></div>
@@ -251,7 +265,7 @@
   <h2><img src="harry.png" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:-6px;margin-right:6px;">ROLE PLAY I: Let's Talk with Harry (full sentence answers)</h2>
   <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Here Harry the elephant asks one character at a time questions about the story. Select a character then answer the questions from the perspective of that character.</p>
   <div id="triangling-lock-message">🔒 Complete Q&amp;A with Harry first to unlock Role Play I!</div>
-  <button onclick="instantMasterTriangling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Triangling</button>
+  <button class="test-only" onclick="instantMasterTriangling()" style="background:#EEE;color:#333;">⚡ (Test only) Instantly master Triangling</button>
   <div id="triangling-harry-box" style="display:flex;align-items:center;gap:12px;background:var(--panel-warm,#FFF3E0);border:2px solid var(--orange,#FF8A3D);border-radius:14px;padding:10px 14px;margin-bottom:14px;">
     <img src="harry.png" alt="Harry" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--orange,#FF8A3D);flex-shrink:0;">
     <div style="font-weight:800;color:var(--navy,#1B2A4A);">You're always speaking to Harry</div>
