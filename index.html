@@ -107,6 +107,15 @@
     background: var(--panel); cursor: pointer; font-weight: 700; color: var(--navy);
     display: inline-block;
   }
+  .vocab-group-label { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.06em; color: #D84315; margin: 14px 4px 8px; }
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding: 0 4px; }
+  .vocab-card {
+    margin: 0; padding: 10px; border-width: 3px; border-radius: 18px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .vocab-card .vocab-art { display: block; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 12px; }
+  .vocab-card .vocab-text { font-size: 1.4rem; font-weight: 800; color: var(--navy); }
+  .vocab-card.tapped { transform: scale(0.96); }
 
   #match-game-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 14px 0; }
 
@@ -241,14 +250,15 @@
   </div>
   <div id="story-container"></div>
 
-  <h2>Vocabulary Challenge: Sure You Can Master These Words?</h2>
+  <h2>Listen first</h2>
+  <p style="font-size:0.9rem;color:var(--navy,#1B2A4A);background:var(--panel-warm,#FFF3E0);padding:10px 14px;border-radius:12px;">Tap each picture to hear the word. No English needed: the picture tells you.</p>
   <div id="vocab-list"></div>
 
   <h3>Practice: Match Game (optional)</h3>
   <button onclick="startVocabMatchGame()">Start Match Game</button>
   <div id="match-game-container"></div>
 
-  <h3>Mastery Test (required)</h3>
+  <h3>Mastery Test (required): Sure You Can Master These Words?</h3>
   <button onclick="initVocabQuiz()">Start Mastery Test</button>
   <div id="vocab-quiz-container"></div>
 
@@ -362,7 +372,7 @@
     <button class="no-print" onclick="resetAllProgress()" style="margin-top:10px;width:100%;max-width:480px;display:block;margin-left:auto;margin-right:auto;background:#EEE;color:#333;">🔄 Start Over</button>
   </div>
 
-<script src="game3.js?v=19"></script>
+<script src="game3.js?v=20"></script>
 <script>
   loadGameData().then(() => {
     renderVocabulary(document.getElementById("vocab-list"));

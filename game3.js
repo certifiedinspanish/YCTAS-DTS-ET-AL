@@ -377,20 +377,66 @@ function printCertificate() {
 }
 
 
+/* Vocabulary picture cards: each picturable word shows a picture,
+   the Spanish word and a speaker icon; tapping plays the word.
+   Words that can't be pictured (y, o, un, una, es, hay, Fin, Cómo es)
+   are deliberately left out of this list -- they're still taught in
+   the Match Game and Mastery Test. */
+const VOCAB_SPEAKER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00897B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/></svg>';
+const VC = (src, extra) => `<img src="${src}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px;${extra || ''}">`;
+const VOCAB_PICTURES = {
+  chica:    { group: 0, art: VC('paula.png') },
+  chico:    { group: 0, art: VC('lez.png') },
+  perro:    { group: 0, art: VC('clifford.png') },
+  elefante: { group: 0, art: VC('harry.png', 'object-position:top;') },
+  cuatro:   { group: 0, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#FFF3E0;border-radius:12px;font-size:76px;font-weight:900;color:#FF8A3D;">4</div>' },
+  amigos:   { group: 0, art: '<div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:4px;">' + ['paula','lez','clifford','harry'].map(n => `<img src="${n}.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:10px;">`).join('') + '</div>' },
+  alta:     { group: 1, art: '<div style="width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:6px;background:#FCE4EC;border-radius:12px;box-sizing:border-box;padding:8px;"><img src="paula.png" alt="" style="width:50%;height:100%;object-fit:cover;border-radius:10px;"><svg width="18" height="100%" viewBox="0 0 18 100" preserveAspectRatio="none" aria-hidden="true"><path d="M9 4 V96 M3 12 L9 4 L15 12 M3 88 L9 96 L15 88" fill="none" stroke="#D81B60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' },
+  rico:     { group: 1, art: '<div style="width:100%;height:100%;position:relative;background:#FCE4EC;border-radius:12px;overflow:hidden;"><img src="lez.png" alt="" style="position:absolute;left:8%;bottom:0;width:70%;height:70%;object-fit:cover;border-radius:10px;"><svg style="position:absolute;right:6%;top:7%;width:36%;height:53%;" viewBox="0 0 44 64" aria-hidden="true"><g fill="#FFC400" stroke="#B26A00" stroke-width="2"><ellipse cx="22" cy="54" rx="18" ry="6"/><ellipse cx="22" cy="44" rx="18" ry="6"/><ellipse cx="22" cy="34" rx="18" ry="6"/><ellipse cx="22" cy="24" rx="18" ry="6"/></g><text x="22" y="14" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#B26A00">$</text></svg></div>' },
+  grande:   { group: 1, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#FCE4EC;border-radius:12px;"><img src="clifford.png" alt="" style="width:94%;height:94%;object-fit:cover;border-radius:10px;"></div>' },
+  'pequeño':{ group: 1, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#FCE4EC;border-radius:12px;"><img src="harry.png" alt="" style="width:36%;height:42%;object-fit:cover;object-position:top;border-radius:8px;"></div>' },
+  soy:      { group: 2, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#E0F2F1;border-radius:12px;"><svg width="80%" height="80%" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="26" r="14" fill="#FF8A3D"/><path d="M26 92 V62 a22 22 0 0 1 44 0 V92 z" fill="#FF8A3D"/><path d="M70 66 C82 60 80 50 62 54" fill="none" stroke="#1B2A4A" stroke-width="6" stroke-linecap="round"/><circle cx="58" cy="55" r="5" fill="#1B2A4A"/></svg></div>' },
+  eres:     { group: 2, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#E0F2F1;border-radius:12px;"><svg width="86%" height="80%" viewBox="0 0 104 96" aria-hidden="true"><circle cx="30" cy="26" r="14" fill="#FF8A3D"/><path d="M8 92 V62 a22 22 0 0 1 44 0 V92 z" fill="#FF8A3D"/><path d="M50 60 H90" stroke="#1B2A4A" stroke-width="6" stroke-linecap="round"/><path d="M82 52 L92 60 L82 68" fill="none" stroke="#1B2A4A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' },
+  'sí':     { group: 2, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#E0F2F1;border-radius:12px;"><svg width="64%" height="64%" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#00A651"/><path d="M13 25 L21 33 L36 16" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' },
+  no:       { group: 2, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#E0F2F1;border-radius:12px;"><svg width="64%" height="64%" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#D32F2F"/><path d="M15 15 L33 33 M33 15 L15 33" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/></svg></div>' },
+  'quién':  { group: 2, art: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#E0F2F1;border-radius:12px;"><svg width="80%" height="80%" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="34" r="20" fill="#1B2A4A"/><path d="M18 92 V78 a30 30 0 0 1 60 0 V92 z" fill="#1B2A4A"/><text x="48" y="44" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="900" font-size="30" fill="#FFC400">?</text></svg></div>' },
+};
+const VOCAB_GROUPS = [
+  { label: 'THE FRIENDS', border: '#FF8A3D' },
+  { label: "WHAT THEY'RE LIKE", border: '#D81B60' },
+  { label: 'TALKING WORDS', border: '#00897B' },
+];
+
 function renderVocabulary(containerEl) {
   containerEl.innerHTML = "";
-  GAME_DATA.vocabulary.forEach(entry => {
-    const btn = document.createElement("button");
-    btn.className = "vocab-word";
-    btn.textContent = entry.word;
-    btn.setAttribute("aria-label", entry.word);
-    btn.onclick = () => {
-      flashTap(btn);
-      playAudio(entry.audio);
-      vocabHeardWords.add(entry.word);
-      checkGateProgression();
-    };
-    containerEl.appendChild(btn);
+  VOCAB_GROUPS.forEach((g, gi) => {
+    const entries = GAME_DATA.vocabulary.filter(e => {
+      const p = VOCAB_PICTURES[e.word.toLowerCase()];
+      return p && p.group === gi;
+    });
+    if (!entries.length) return;
+    const label = document.createElement("div");
+    label.className = "vocab-group-label";
+    label.textContent = g.label;
+    containerEl.appendChild(label);
+    const grid = document.createElement("div");
+    grid.className = "vocab-grid";
+    entries.forEach(entry => {
+      const pic = VOCAB_PICTURES[entry.word.toLowerCase()];
+      const btn = document.createElement("button");
+      btn.className = "vocab-word vocab-card";
+      btn.style.borderColor = g.border;
+      btn.setAttribute("aria-label", entry.word);
+      btn.innerHTML = `<span class="vocab-art">${pic.art}</span><span class="vocab-text">${entry.word}</span>${VOCAB_SPEAKER}`;
+      btn.onclick = () => {
+        flashTap(btn);
+        playAudio(entry.audio);
+        vocabHeardWords.add(entry.word);
+        checkGateProgression();
+      };
+      grid.appendChild(btn);
+    });
+    containerEl.appendChild(grid);
   });
 }
 
